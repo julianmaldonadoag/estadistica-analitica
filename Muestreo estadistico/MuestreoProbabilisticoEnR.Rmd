@@ -1,0 +1,220 @@
+---
+title: "Muestreo probabilistico en R"
+output: html_notebook
+---
+
+## Funciones utiles.
+```{r}
+#' Desconocemos el tamano de la poblacion.
+#' @param e Error muestral permitido o desviacion respecto a la media.
+#' @param Z Es una constante que depende del nivel de confianza que asignemos.
+#' @param S2 Es la desviacion estandar de la poblacion al cuadrado.
+sizeWithoutPop <- function(e, Z, S2) {
+  return ( (Z**2 * S2) / e**2 )
+}
+
+#' Conocemos el tamano de la poblacion.
+#' @param N Tamano de la poblacion.
+#' @param e Error muestral permitido o desviacion respecto a la media.
+#' @param Z Es una constante que depende del nivel de confianza que asignemos.
+#' @param S2 Es la desviacion estandar de la poblacion al cuadrado.
+sizeWithPop <- function(N, e, Z, S2) {
+  return ( (N * Z**2 * S2) / (( (N-1) * e**2) + (Z**2 * S2)) )
+}
+
+computeZ <- function(confidence) {
+  a <- 1 - confidence
+  
+  return (round( qnorm(1 - (a/2) ), 2 ))
+}
+```
+
+## Ejercicios de practica.
+
+### 1. Muestreo aleatorio simple CR. Uso del dataset faithful.
+
+#### Descripcion del problema:
+
+Tomando como referencia la base de datos faithful como la población, determina el tamaño muestral con un error del **9%**  y un nivel de confianza del **82%** , suponiendo una varianza poblacional de **1**. A continuación, realiza un muestreo aleatorio simple utilizando una semilla con valor de **1991** y el tamaño muestral previo, con repetición, y a partir de la muestra, calcula la media muestral para la variable de erupciones.
+
+**Nota:** ingresa el valor de la media muestral utilizando precisión de centésimas.
+
+#### Solución:
+```{r}
+head(faithful)
+```
+
+Datos proporcionados para calcular el tamaño de la muestra.
+```{r}
+e <- 0.09
+confidence <- 0.82
+S2 <- 1
+# Datos indirectos.
+N <- nrow(faithful)
+Z <- computeZ(confidence)
+```
+
+Calculo del tamaño de la muestra conociendo la población.
+```{r}
+n <- sizeWithPop(N, e, Z, S2)
+n <- ceiling(n)
+n
+```
+
+Muestreo aleatorio simple con repetición
+```{r}
+set.seed(1991)
+mascr <- sample(1:N, size = n, replace = TRUE)
+mascr
+```
+
+Asignamos los elementos de cada muestra.
+```{r}
+faithfulmascr <- faithful[mascr, ]
+head(faithfulmascr)
+```
+
+Calculo de la media muestral para la variable de erupciones.
+```{r}
+res <- mean(faithfulmascr$eruptions)
+round(res, 2)
+```
+
+### 2. Muestreo sistemático SR. Uso del dataset frenny.
+
+#### Descripción del problema:
+Tomando como referencia la base de datos **frenny** como la población, determina el tamaño muestral con un error del  **20%** y un nivel de confianza del **97%**, suponiendo una varianza poblacional de **0.09**. A continuación, realiza un muestreo sistemático utilizando una semilla con valor de **2005** y el tamaño muestral previo. A partir de dicha muestra, calcula la media muestral para los ingresos trimestrales retrasados.
+
+**Nota**: ingresa el valor de la media muestral utilizando precisión de milésimas.
+
+#### Solucion:
+
+Primeras 6 filas del dataset
+```{r}
+head(freeny)
+```
+
+Datos proporcionados para calcular el tamaño de la muestra
+```{r}
+e <- 0.20
+confidence <- 0.97
+S2 <- 0.09
+# Datos indirectos.
+N <- nrow(freeny)
+Z <- computeZ(confidence)
+```
+
+Cálculo del tamaño de la muestra conociendo la población.
+```{r}
+n <- sizeWithPop(N, e, Z, S2)
+n <- ceiling(n)
+n
+```
+
+Pasos para conseguir el muestreo sistemático.
+
+1. Encontrar el valor de **k**.
+```{r}
+k <- round(N / n, 0)
+k
+```
+
+2. Calcular el primer dato de forma aleatoria.
+```{r}
+set.seed(2005)
+i <- sample(1:N, size = 1)
+i
+```
+
+3. Se termina de calcular el resto de números de manera sistemática.
+```{r}
+ms <-rep(0)
+ms[1] <-i
+for(j in 1:n){
+  ms[j] <-i+(j-1)*k
+}
+
+for(j in 1:n){
+  if(ms[j]>N){ms[j]<- ms[j]-N} else
+  {ms[j]<- ms[j]}
+}
+ms
+```
+
+4. Asignamos los elementos de cada muestra.
+```{r}
+freenyms <- freeny[ms, ]
+freenyms
+```
+
+Media muestral para los ingresos trimestrales retrasados.
+```{r}
+meanIncomes <- mean(freenyms$lag.quarterly.revenue)
+round(meanIncomes, 3)
+```
+
+
+### 3. Muestreo estratificado CR. Uso del dataset LakeHuron.
+
+#### Descripción del problema:
+Tomando como población la base de datos **LakeHuron**, determina el tamaño muestral con un error del **11%** y un nivel de confianza del **81** , suponiendo una varianza poblacional de **1**. A continuación, realiza un muestreo estratificado (con repetición) utilizando una semilla con valor de **1993** y suponiendo **7**  estratos para la población, todos de igual tamaño y ordenados como viene en la base, empleando el tamaño muestral previamente obtenido. Calcula el rango de la muestra.
+
+**Nota**: ingresa el valor del rango muestral utilizando precisión de centésimas.
+
+#### Solución:
+
+```{r}
+LakeHuron
+```
+
+Datos proporcionados.
+```{r}
+e <- 0.11
+confidence <- 0.81
+S2 <- 1
+strata <- 7
+# Datos indirectos.
+Z <- computeZ(confidence)
+N <- length(LakeHuron)
+```
+
+Se cálcula el tamaño de la muestra
+```{r}
+n <- sizeWithPop(N, e, Z, S2)
+n <- ceiling(n)
+n
+```
+
+Números por cada muestra.
+```{r}
+m <- ceiling(n / strata) # muestras por cada estrato.
+
+set.seed(1993)
+
+n1 <- sample(1:14, size = m, replace = TRUE)
+n2 <- sample(15:28, size = m, replace = TRUE)
+n3 <- sample(29:42, size = m, replace = TRUE)
+n4 <- sample(43:56, size = m, replace = TRUE)
+n5 <- sample(57:70, size = m, replace = TRUE)
+n6 <- sample(71:84, size = m, replace = TRUE)
+n7 <- sample(85:98, size = m, replace = TRUE)
+
+```
+
+Asignamos los elementos de la muestra.
+```{r}
+lakehuronme <- c(LakeHuron[n1], LakeHuron[n2], LakeHuron[n3], LakeHuron[n4], 
+                 LakeHuron[n5], LakeHuron[n6], LakeHuron[n7])
+lakehuronme
+```
+Datos sobre la muestra.
+```{r}
+summary(lakehuronme)
+```
+
+Rango de la muestra
+```{r}
+rangeme <- max(lakehuronme) - min(lakehuronme)
+round(rangeme, 2)
+```
+
