@@ -1,0 +1,277 @@
+---
+title: "Distribución de la media muestral y teorema central del limite"
+output: html_notebook
+---
+
+## Ejercicios de práctica
+
+### 1. Despeje del teorema.
+
+#### Problema.
+
+Si la desviación estándar de la media muestral de tamaño **41** de una población grande o infinita es **7**, ¿qué tan grande debe ser el tamaño de la muestra si la desviación estándar de la media muestral se reduce a **2.3**?
+
+Nota: redondea  ÚNICAMENTE hasta el final al entero más cercano.
+
+#### Solución.
+
+Datos.
+```{r}
+n1 <- 41
+var_x1 <- 7**2
+var_x2 <- 2.3**2
+
+var_x1
+var_x2
+```
+
+Como **var_x1 = var / n1**.
+Y queremos conocer el valor de **var**, despejando obtenemos **var = n1 * var_x1**.
+```{r}
+var <- n1 * var_x1
+var
+```
+
+Ahora de **var_x2 = var / n2**.
+Solo nos falta conocer el valor de **n2**. Por lo que se despeja obteniendo 
+**n2 = var / var_x2**.
+```{r}
+n2 <- var / var_x2
+
+n2
+round(n2)
+```
+
+
+### 2. Probabilidad de un intervalo.
+
+#### Problema.
+
+Si se extraen todas las muestras posibles de tamaño **16** de una población normal con media igual a **45** y desviación estándar igual a **6**, ¿cuál es la probabilidad de que una media muestral caiga en el intervalo que va desde **μX¯−1.8σX¯** hasta **μX¯−0.4σX¯**?
+
+Nota: redondea ÚNICAMENTE hasta el final, con precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n <- 16
+mean <- 45
+sd_x <- 6
+
+l <- mean - (1.8 * sd_x)
+r <- mean - (0.4 * sd_x)
+```
+
+Probabilidad dentro del intervalo.
+```{r}
+# l <= X <= r
+prob <- pnorm(r, mean, sd_x) - pnorm(l, mean, sd_x)
+prob
+round(prob, 3)
+```
+
+### 3. Uso del teorema. Remaches.
+
+#### Problema.
+
+La resistencia a la ruptura de un remache tiene un valor medio de **9750** lb/pulg2 y una desviación estándar de **410** lb/pulg2. ¿Cuál es la probabilidad aproximada de que la resistencia a la ruptura media de una muestra aleatoria de **45** remaches esté entre **9631** y **9865** lb/pulg2?
+
+Nota: redondea  ÚNICAMENTE hasta el final usando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean <- 9750
+sd <- 410
+n <- 45
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Probabilidad en el intervalo.
+```{r}
+prob <- pnorm(9865, mean, sd_x) - pnorm(9631, mean, sd_x)
+round(prob, 2)
+```
+
+### 4. Uso del teorema. Maquinas de pan.
+
+#### Problema.
+
+La vida media de una máquina para elaborar pan es de **8.27** años, con una desviación estándar de **0.95** años. Supón que la vida de estas máquinas sigue aproximadamente una distribución normal y calcula la probabilidad de que la vida media de una muestra aleatoria de **17** máquinas caiga entre **7.87** y **8.61** años.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean <- 8.27
+sd <- 0.95
+n <- 17
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Probabilidad en el intervalo dado.
+```{r}
+prob <- pnorm(8.61, mean, sd_x) - pnorm(7.87, mean, sd_x)
+round(prob, 2)
+```
+
+## Ejercicios de evaluación. (Diferentes a los de práctica)
+
+### 1. Uso del teorema. Remaches. qnorm.
+
+#### Problema.
+
+La resistencia a la ruptura de un remache tiene un valor medio de **9850** lb/pulg2 y una desviación estándar de **500** lb/pulg2. ¿Cuál es el valor aproximado de la resistencia a la ruptura por encima del cual se encuetra el **17.5%** de las medias calculadas de muestras de tamaño **38**?
+
+Nota: redondea  ÚNICAMENTE hasta el final al entero más cercano.
+
+#### Solución.
+
+Datos.
+```{r}
+mean <- 9850
+sd <- 500
+n <- 38
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Como nos piden el valor dada la probabilidad (por encima) tenemos que,
+**P(X_ > x) = 0.175**
+
+**1 - P(X_ <= x) = 0.175**
+
+**P(X_ <= x) = 1 - 0.175**
+```{r}
+p <- 1 - 0.175
+x <- qnorm(p, mean, sd_x)
+round(x)
+```
+
+### 3. Uso del teorema. Pernos.
+
+#### Problema.
+
+Se sabe que la dureza Rockwell de pernos de un tipo tiene un valor medio de **43.4** y una desviación estándar de **0.5**. ¿Cuál es la probabilidad de que la dureza media de una muestra aleatoria de **77** pernos sea de menos de **43.43**?
+
+Nota: redondea ÚNICAMENTE hasta el final usando precisión de centésimas.
+
+#### Solución.
+
+Datos
+```{r}
+mean <- 43.4
+sd <- 0.5
+n <- 77
+q <- 43.43
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Probabilidad en el intervalo.
+```{r}
+prob <- pnorm(q, mean, sd_x)
+round(prob, 2)
+```
+
+
+### 5. Uso del teorema. Maquinas de pan. qnorm.
+
+#### Problema.
+
+La vida media de una máquina para elaborar pan es de **5.28** años, con una desviación estándar de **0.68** años. Supón que la vida de estas máquinas sigue aproximadamente una distribución normal y calcula el valor de x para obtener una probabilidad del **13%** de la parte superior de la distribución de la media muestral de tamaño **35**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean <- 5.28
+sd <- 0.68
+n <- 35
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Como nos piden el valor dada la probabilidad (de la parte superior) tenemos que,
+**P(X_ > x) = 0.13**
+
+**1 - P(X_ <= x) = 0.13**
+
+**P(X_ <= x) = 1 - 0.13**
+```{r}
+p <- 1 - 0.13
+x <- qnorm(p, mean, sd_x)
+round(x, 2)
+```
+
+### 6. Uso del teorema. Cajero.
+
+#### Problema.
+
+El tiempo que le toma al cajero de un banco atender a un cliente es una variable aleatoria con una media de **3.21** minutos y una desviación estándar de **0.84** minutos. Si se observa una muestra aleatoria de **30** clientes, calcula la probabilidad aproximada de que el tiempo medio que el cliente pasa en la ventanilla del cajero sea a lo sumo **3.51** minutos.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos
+```{r}
+mean <- 3.21
+sd <- 0.84
+n <- 30
+q <- 3.51
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Probabilidad en el intervalo.
+```{r}
+prob <- pnorm(q, mean, sd_x)
+round(prob, 2)
+```
+
+
