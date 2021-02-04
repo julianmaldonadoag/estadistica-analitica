@@ -1,0 +1,135 @@
+---
+title: "Distribución de la media muestral y teorema central del limite"
+output: html_notebook
+---
+
+## Ejercicios de práctica
+
+### 1. Distribución de la media muestral. Despeje del teorema.
+
+#### Problema.
+
+Si la desviación estándar de la media muestral de tamaño **41** de una población grande o infinita es **7**, ¿qué tan grande debe ser el tamaño de la muestra si la desviación estándar de la media muestral se reduce a **2.3**?
+
+Nota: redondea  ÚNICAMENTE hasta el final al entero más cercano.
+
+#### Solución.
+
+Datos.
+```{r}
+n1 <- 41
+var_x1 <- 7**2
+var_x2 <- 2.3**2
+
+var_x1
+var_x2
+```
+
+Como **var_x1 = var / n1**.
+Y queremos conocer el valor de **var**, despejando obtenemos **var = n1 * var_x1**.
+```{r}
+var <- n1 * var_x1
+var
+```
+
+Ahora de **var_x2 = var / n2**.
+Solo nos falta conocer el valor de **n2**. Por lo que se despeja obteniendo 
+**n2 = var / var_x2**.
+```{r}
+n2 <- var / var_x2
+
+n2
+round(n2)
+```
+
+
+### 2. Distribución de la media muestral. Probabilidad de un intervalo.
+
+#### Problema.
+
+Si se extraen todas las muestras posibles de tamaño **16** de una población normal con media igual a **45** y desviación estándar igual a **6**, ¿cuál es la probabilidad de que una media muestral caiga en el intervalo que va desde **μX¯−1.8σX¯** hasta **μX¯−0.4σX¯**?
+
+Nota: redondea ÚNICAMENTE hasta el final, con precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n <- 16
+mean <- 45
+sd <- 6
+
+l <- mean - (1.8 * sd)
+r <- mean - (0.4 * sd)
+```
+
+Probabilidad dentro del intervalo.
+```{r}
+# l <= X <= r
+prob <- pnorm(r, mean, sd) - pnorm(l, mean, sd)
+prob
+round(prob, 3)
+```
+
+### 3. Distribución de la media muestral. Uso del teorema. Remaches.
+
+#### Problema.
+
+La resistencia a la ruptura de un remache tiene un valor medio de **9750** lb/pulg2 y una desviación estándar de **410** lb/pulg2. ¿Cuál es la probabilidad aproximada de que la resistencia a la ruptura media de una muestra aleatoria de **45** remaches esté entre **9631** y **9865** lb/pulg2?
+
+Nota: redondea  ÚNICAMENTE hasta el final usando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean <- 9750
+sd <- 410
+n <- 45
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Probabilidad en el intervalo.
+```{r}
+prob <- pnorm(9865, mean, sd_x) - pnorm(9631, mean, sd_x)
+round(prob, 2)
+```
+
+### 4. Distribución de la media muestral. Uso del teorema. Maquinas de pan.
+
+#### Problema.
+
+La vida media de una máquina para elaborar pan es de **8.27** años, con una desviación estándar de **0.95** años. Supón que la vida de estas máquinas sigue aproximadamente una distribución normal y calcula la probabilidad de que la vida media de una muestra aleatoria de **17** máquinas caiga entre **7.87** y **8.61** años.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean <- 8.27
+sd <- 0.95
+n <- 17
+```
+
+Se calcula el valor de la desviación estandar de la media muestral.
+Por el teorema **var_x = var / n**.
+Podemos usar **sd_x = sd / sqrt(n)**.
+```{r}
+sd_x <- sd / sqrt(n)
+sd_x
+```
+
+Probabilidad en el intervalo dado.
+```{r}
+prob <- pnorm(8.61, mean, sd_x) - pnorm(7.87, mean, sd_x)
+round(prob, 2)
+```
+
