@@ -1,0 +1,133 @@
+---
+title: "Distribución t"
+output: html_notebook
+---
+
+## Ejercicios de práctica.
+
+### 1. Resistencia de remaches.
+
+#### Problema.
+
+La resistencia x de cierto tipo de remaches que se utlizan en el motor de una máquina tiene una media de **5150** psi. ¿Cuál debe ser el tamaño de la muestra si desea que la probabilidad de que la media muestral de las resistencias caiga entre **5122** y **5178** psi, sea de **0.9988** con una desviación estándar muestral de **40** psi?
+
+Nota: redondea  ÚNICAMENTE hasta el final al entero más cercano.
+
+#### Solución. Por fuerza bruta.
+
+Datos.
+```{r}
+mu <- 5150
+x_left <- 5122
+x_right <- 5178
+p <- 0.9988
+S <- 40
+```
+
+La probabilidad obtenida con la formula debe coincidir (o acercarse) con la proporcionada.
+```{r}
+# Aumentar el rango segun se necesite.
+for (i in 2:50) {
+  n <- i
+
+  t_left <- (x_left - mu) / (S / sqrt(n))
+  t_right <- (x_right - mu) / (S / sqrt(n))
+  
+  res <- pt(t_right, n-1) - pt(t_left, n-1)
+  res <- round(res, 4)
+  
+  if (res == p) {
+    print(c(-1, n)) # -1 indica que salio del bucle.
+    break
+  }
+  print(c(i, res)) # Si no sale del bucle, revisar cual se acerca mas.
+}
+
+```
+
+
+### 2. Polvos urbanos.
+
+#### Problema.
+
+Se estima que la concentración de Pb en los polvos urbanos de la ciudad de Cancún sigue una distribución aproximadamente normal con una media de **286.37** ppm. Se toma una muestra de **24** puntos en la ciudad  y se obtiene una desviación estándar de la muestra de **20.21** ppm. Si se tomase otra muestra de igual tamaño, ¿cuál es la probabilidad de que la media muestral de las concentraciones esté entre **274.65** y **290.21** ppm?
+
+Nota: redondea  ÚNICAMENTE hastael final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mu <- 286.37
+n <- 24
+S <- 20.21
+x_min <- 274.65 
+x_max <- 290.21
+```
+
+P(x_min <= X <= x_max)
+```{r}
+t_min <- (x_min - mu) / (S / sqrt(n))
+t_max <- (x_max - mu) / (S / sqrt(n))
+
+res <- pt(t_max, n-1) - pt(t_min, n-1)
+round(res, 2)
+```
+
+### 3. Volumen de refrescos.
+
+#### Problema.
+
+Por experiencia se sabe que el volumen de llenado de una máquina dispensadora de refrescos tiene una media **144.88** mililitros. Se toma una muestra aleatoria de **7** llenados obteniendo los siguientes resultados (en mililitros): 145.55, 145.56, 144.46, 145.31, 143.62, 145.53, 145.45. Supón que la variable de interés sigue aproximadamente una distribución normal y calcula la probabilidad de que la media de llenado de una muestra de dicho tamaño esté entre **144.53** y **145.32** mililitros.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mu <- 144.88
+n <- 7
+x_min <- 144.53 
+x_max <- 145.32
+data <- c(145.55, 145.56, 144.46, 145.31, 143.62, 145.53, 145.45)
+S <- sd(data)
+```
+
+P(x_min <= X <= x_max)
+```{r}
+t_min <- (x_min - mu) / (S / sqrt(n))
+t_max <- (x_max - mu) / (S / sqrt(n))
+
+res <- pt(t_max, n-1) - pt(t_min, n-1)
+round(res, 2)
+```
+
+### 4. Estatura de docentes.
+
+#### Problema.
+
+La estatura del cuerpo docente de la Universidad del Caribe es una variable aleatoria que se distribuye normal, con una media de **174.31** centímetros. Para comprobar dicha afirmación, un grupo de estudiantes dicide tomar una muestra aleatoria simple de docentes obteniendo las siguientes estaturas (en centímetros): 170.09, 173.25, 181.09, 171.03, 172.43, 183.24. Si se tomase una muestra aleatoria de igual tamaño, ¿qué tan probable es obtener una media muestral que caiga en el intervalo **(173.35,176.45)**?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mu <- 174.31
+x_min <- 173.35 
+x_max <- 176.45
+data <- c(170.09, 173.25, 181.09, 171.03, 172.43, 183.24)
+n <- length(data)
+S <- sd(data)
+```
+
+P(x_min <= X <= x_max)
+```{r}
+t_min <- (x_min - mu) / (S / sqrt(n))
+t_max <- (x_max - mu) / (S / sqrt(n))
+
+res <- pt(t_max, n-1) - pt(t_min, n-1)
+round(res, 2)
+```
