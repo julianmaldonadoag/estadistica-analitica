@@ -1,0 +1,284 @@
+---
+title: "Distribución t"
+output: html_notebook
+---
+
+## Ejercicios de práctica.
+
+### 1. Resistencia de remaches. Calcular n.
+
+#### Problema.
+
+La resistencia x de cierto tipo de remaches que se utlizan en el motor de una máquina tiene una media de **5150** psi. ¿Cuál debe ser el tamaño de la muestra si desea que la probabilidad de que la media muestral de las resistencias caiga entre **5122** y **5178** psi, sea de **0.9988** con una desviación estándar muestral de **40** psi?
+
+Nota: redondea  ÚNICAMENTE hasta el final al entero más cercano.
+
+#### Solución. Por fuerza bruta.
+
+Datos.
+```{r}
+mu <- 5150
+x_min <- 5122
+x_max <- 5178
+p <- 0.9988
+S <- 40
+```
+
+La probabilidad obtenida con la formula debe coincidir (o acercarse) con la proporcionada.
+```{r}
+# Aumentar el rango segun se necesite.
+for (i in 2:50) {
+  n <- i
+
+  t_min <- (x_min - mu) / (S / sqrt(n))
+  t_max <- (x_max - mu) / (S / sqrt(n))
+  
+  res <- pt(t_max, n-1) - pt(t_min, n-1)
+  res <- round(res, 4)
+  
+  if (res == p) {
+    print(c(-1, n)) # -1 indicando que encontro la probabilidad exacta.
+    break
+  }
+  print(c(i, res)) # Si no sale del bucle, revisar cual se acerca mas.
+}
+
+```
+
+
+### 2. Polvos urbanos. Probabilidad de X~ entre intervalos.
+
+#### Problema.
+
+Se estima que la concentración de Pb en los polvos urbanos de la ciudad de Cancún sigue una distribución aproximadamente normal con una media de **286.37** ppm. Se toma una muestra de **24** puntos en la ciudad  y se obtiene una desviación estándar de la muestra de **20.21** ppm. Si se tomase otra muestra de igual tamaño, ¿cuál es la probabilidad de que la media muestral de las concentraciones esté entre **274.65** y **290.21** ppm?
+
+Nota: redondea  ÚNICAMENTE hastael final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mu <- 286.37
+n <- 24
+S <- 20.21
+x_min <- 274.65 
+x_max <- 290.21
+```
+
+P(x_min <= X <= x_max)
+```{r}
+t_min <- (x_min - mu) / (S / sqrt(n))
+t_max <- (x_max - mu) / (S / sqrt(n))
+
+p <- pt(t_max, n-1) - pt(t_min, n-1)
+round(p, 2)
+```
+
+### 3. Volumen de refrescos. Probabilidad de X~ entre intervalos.
+
+#### Problema.
+
+Por experiencia se sabe que el volumen de llenado de una máquina dispensadora de refrescos tiene una media **144.88** mililitros. Se toma una muestra aleatoria de **7** llenados obteniendo los siguientes resultados (en mililitros): 145.55, 145.56, 144.46, 145.31, 143.62, 145.53, 145.45. Supón que la variable de interés sigue aproximadamente una distribución normal y calcula la probabilidad de que la media de llenado de una muestra de dicho tamaño esté entre **144.53** y **145.32** mililitros.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mu <- 144.88
+n <- 7
+data <- c(145.55, 145.56, 144.46, 145.31, 143.62, 145.53, 145.45)
+x_min <- 144.53 
+x_max <- 145.32
+
+S <- sd(data)
+```
+
+P(x_min <= X <= x_max)
+```{r}
+t_min <- (x_min - mu) / (S / sqrt(n))
+t_max <- (x_max - mu) / (S / sqrt(n))
+
+p <- pt(t_max, n-1) - pt(t_min, n-1)
+round(p, 2)
+```
+
+### 4. Estatura de docentes. Probabilidad de X~ entre intervalos.
+
+#### Problema.
+
+La estatura del cuerpo docente de la Universidad del Caribe es una variable aleatoria que se distribuye normal, con una media de **174.31** centímetros. Para comprobar dicha afirmación, un grupo de estudiantes dicide tomar una muestra aleatoria simple de docentes obteniendo las siguientes estaturas (en centímetros): 170.09, 173.25, 181.09, 171.03, 172.43, 183.24. Si se tomase una muestra aleatoria de igual tamaño, ¿qué tan probable es obtener una media muestral que caiga en el intervalo **(173.35,176.45)**?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mu <- 174.31
+data <- c(170.09, 173.25, 181.09, 171.03, 172.43, 183.24)
+x_min <- 173.35 
+x_max <- 176.45
+
+n <- length(data)
+S <- sd(data)
+```
+
+P(x_min <= X <= x_max)
+```{r}
+t_min <- (x_min - mu) / (S / sqrt(n))
+t_max <- (x_max - mu) / (S / sqrt(n))
+
+p <- pt(t_max, n-1) - pt(t_min, n-1)
+round(p, 2)
+```
+
+## Ejercicios de evaluación (distintos a los de práctica).
+
+### 1. Volumen de refrescos. Calcular x a la izquierda.
+
+#### Problema.
+
+Por experiencia se sabe que el volumen de llenado de una máquina dispensadora de refrescos tiene una media **142** mililitros. Se toma una muestra aleatoria de **30** llenados obteniendo los siguientes resultados (en mililitros): 141.55, 140.74, 139.84, 141.48, 144, 144.21, 144, 143.27, 143.99, 140.33, 140.33, 139.24, 142.85, 144.13, 142.03, 140.36, 141.21, 139.81, 140.2, 139.93, 141.39, 142.16, 141.93, 140.89, 143.31, 138.64, 142.14, 141.96, 142.01, 141.52. Supón que la variable de interés sigue aproximadamente una distribución normal y calcula el valor de **x** a la izquierda del cual caería el **81%** de las medias calculadas de muestras de dicho tamaño.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mu <- 142
+n <- 30
+data <- c(141.55, 140.74, 139.84, 141.48, 144, 144.21, 144, 143.27, 143.99, 140.33, 
+          140.33, 139.24, 142.85, 144.13, 142.03, 140.36, 141.21, 139.81, 140.2, 139.93, 
+          141.39, 142.16, 141.93, 140.89, 143.31, 138.64, 142.14, 141.96, 142.01, 141.52)
+p <- 0.81
+
+S <- sd(data)
+```
+
+
+Valor de x.
+```{r}
+t <- qt(p, n-1)
+# Despeje de la formula.
+x <- (t * (S/sqrt(n))) + mu
+
+round(x, 2)
+```
+
+Comprobación.
+```{r}
+t <- (x - mu) / (S / sqrt(n))
+
+res <- pt(t, n-1)
+round(res, 2) # La probabilidad obtenida debe ser la misma que la proporcionada.
+```
+
+### 2. Resistencia de remaches. Calcular n.
+
+#### Problema.
+
+La resistencia x de cierto tipo de remaches que seutlizan en el motor de una máquina tiene una media de **4940** psi. ¿Cuál debe ser el tamaño de la muestra si desea que la probabilidad de que la media muestral de las resistencias caiga entre **4916.9** y **4963.1** psi, sea de **0.9865** con una desviación estándar muestral de **33** psi?
+
+Nota: redondea  ÚNICAMENTE hasta el final al entero más cercano.
+
+#### Solución. Por fuerza bruta
+
+Datos.
+```{r}
+mu <- 4940
+x_min <- 4916.9
+x_max <- 4963.1
+p <- 0.9865
+S <- 33
+```
+
+La probabilidad obtenida con la formula debe coincidir (o acercarse) con la proporcionada.
+```{r}
+# Aumentar el rango segun se necesite.
+for (i in 2:50) {
+  n <- i
+
+  t_min <- (x_min - mu) / (S / sqrt(n))
+  t_max <- (x_max - mu) / (S / sqrt(n))
+
+  res <- pt(t_max, n-1) - pt(t_min, n-1)
+  res <- round(res, 4)
+  
+  if (res == p) {
+    print(c(-1, n)) # -1 indicando que encontro la probabilidad exacta.
+    break
+  }
+  print(c(i, res)) # Si no sale del bucle, revisar cual se acerca mas.
+}
+
+```
+
+### 3. Permeabilidad de algodon. Calcular x a la derecha.
+
+#### Problema.
+
+El volumen de huecos en una tela afecta las propiedades de comodidad, inflamabilidad y aislantes. La permeabilidad de una tela se refiere a la accesibilidad de los espacios huecos al flujo de un gas o líquído. Se toma una muestra de tela de algodón obteniendo las siguientes permeabilidades  (en (cm3/cm2)/s): 47.6, 50.78, 46.49, 47.31, 46.08, 47.67, 49.62. Suponiendo normalidad en la variable de interés con una media de **48.51**, determina el valor de **x** a la derecha del cual caería el **62%** de las medias calculadas de muestras de dicho tamaño.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+data <- c(47.6, 50.78, 46.49, 47.31, 46.08, 47.67, 49.62)
+mu <- 48.51
+p <- 1 - 0.62 # Como es a la derecha.
+
+n <- length(data)
+S <- sd(data)
+```
+
+
+Valor de x.
+```{r}
+t <- qt(p, n-1)
+# Despeje de la formula.
+x <- (t * (S/sqrt(n))) + mu
+
+round(x, 2)
+```
+Comprobación.
+```{r}
+t <- (x - mu) / (S / sqrt(n))
+
+res <- pt(t, n-1)
+round(res, 2) # La probabilidad obtenida debe ser la misma que se calculo previamente.
+```
+
+### 6. Desgaste neumaticos. Probabilidad de X~ mayor o igual.
+
+#### Problema.
+
+Una empresa de taxis prueba una muestra aleatoria de **14** neumáticos radiales con bandas tensoras de acero de cierta marca y registra los siguientes desgastes de la prueba: 51906, 51282, 51390, 51231, 51097, 51484, 51497, 51838, 51308, 51633, 51149, 51964, 51747, 51056. Suponiendo que la población de la cual se tomó la muestra es normal y tiene una media poblacional de **μ=51400** kilómetros, ¿qué tan probable es obtener una media muestral mayor o igual que la obtenida?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n <- 14
+data <- c(51906, 51282, 51390, 51231, 51097, 51484, 51497, 
+          51838, 51308, 51633, 51149, 51964, 51747, 51056)
+mu <- 51400
+
+x <- mean(data)
+S <- sd(data)
+```
+
+
+```{r}
+t <- (x - mu) / (S / sqrt(n))
+
+# P(x >= X) = 1 - P(x < X)
+p <- 1 - pt(t, n-1) 
+round(p, 2)
+```
