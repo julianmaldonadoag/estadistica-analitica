@@ -1,0 +1,234 @@
+---
+title: "Distribución de la varianza muestral."
+output: html_notebook
+---
+
+## Ejercicios de práctica.
+
+### 1. Probabilidad entre intervalos. Concentración de un ingrediente activo.
+
+#### Problema.
+
+La concentración de un ingrediente activo en el producto de una reacción química es fuertemente influido por el catalizador que se usa en la reacción. Se sabe que la concentración del producto de la reacción usando el catalizador sigue una distribución normal con desviación estándar de **3.05** g/L. Se toma la siguiente muestra (en g/L): 225, 230, 230, 228, 228, 224, 225, 226, 222, 221.  ¿Cuál es la probabilidad de que la desviación estándar muestral esté desde **0.79s** hasta **1.22s**, donde s es la desviación estándar de dicha muestra?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+sd <- 3.05
+data <- c(225, 230, 230, 228, 228, 224, 225, 226, 222, 221)
+s_min <- 0.79 * sd
+s_max <- 1.22 * sd
+
+# Indirectos.
+n <- length(data)
+var <- sd**2
+s2_min <- s_min**2
+s2_max <- s_max**2
+```
+
+P(s2_min <= S2 <= s2_max)
+```{r}
+q_min <- ((n - 1) * s2_min) / var
+q_max <- ((n - 1) * s2_max) / var
+
+p <- pchisq(q_max, n-1) - pchisq(q_min, n-1)
+round(p, 2)
+```
+
+### 2. Probabilidad mayor que. Máquina de llenado.
+
+#### Problema.
+
+Supón que se utiliza una máquina para llenar envases de cartón con un líquido. Si se cree que la desviación estándar es de **3.81** mililitros y suponiendo normalidad en el llenado, determina la probabilidad de que la desviación estándar muestral sea mayor que **2.93** para una muestra de tamaño **12**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+sd <- 3.81
+s <- 2.93
+n <- 12
+
+# Indirectos.
+var <- sd**2
+s2 <- s**2
+```
+
+P(S2 > s2) = 1 - P(S2 <= s2)
+```{r}
+q <- ((n - 1) * s2) / var
+p <- 1 - pchisq(q, n-1)
+
+round(p, 2)
+```
+
+### 3. Probabilidad menor. Sodio en bebidas energéticas.
+
+#### Problema.
+
+El contenido de Sodio en cierta marca de bebidas energéticas sigue una distribución normal con una desviación estándar de **2.27** mg. Si se toma una muestra de **26** de tales bebidas, ¿cuál es la probabilidad de que la varianza muestral sea menor que **5.84** mg2?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+sd <- 2.27
+n <- 26
+s2 <- 5.84
+
+# Indirectos.
+var <- sd**2
+```
+
+P(S2 < s2)
+```{r}
+q <- ((n - 1) * s2) / var
+p <- pchisq(q, n-1)
+
+round(p, 2)
+```
+
+### 4. Calcular s de la parte inferior. Monóxido de carbono por vehículos.
+
+#### Problema.
+
+Se desea cuantificar el nivel de monóxido de carbono emitido por los vehículos en una ciudad, el cual se ha determinado por experiencia previa, que sigue una distribución aproximadamente normal con una desviación estándar de **6.87** cm3/L. Determina el valor de **s** para obtener una probabilidad del **81%** de la parte inferior de la distribución de la desviación estándar
+muestral de tamaño **19**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utlizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+sd <- 6.87
+p <- 0.81
+n <- 19
+
+# Indirectos.
+var <- sd**2
+```
+
+P(S2 <= s2) = p
+
+P(chisq <= chisq_without_s2 * s2) = p
+
+chisq_without_s2 * s2 = qchisq(p, n - 1)
+
+s2 = qchisq(p, n - 1) / chisq_without_s2
+```{r}
+chisq_without_s2 <- (n - 1) / var
+s2 <- qchisq(p, n-1) / chisq_without_s2
+s <- sqrt(s2)
+
+round(s, 2)
+```
+
+
+## Ejercicios de evaluación (distintos a los de práctica).
+
+### 3. Calcular s de la parte superior. Monóxido de carbono por vehículos.
+
+#### Problema.
+
+Se desea cuantificar el nivel de monóxido de carbono emitido porlos vehículos en una ciudad, el cual se ha determinado por experiencia previa, que sigue una distribución aproximadamente normal con una desviación estándar de **13.98** cm3/L. Calcula el valor de  **s** para obtener una probabilidad del **15%** de la parte superior de la distribución de la desviación estándar muestral de tamaño **21**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utlizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+sd <- 13.98
+p <- 1 - 0.15 # Por calcular la probabilidad de la parte superior.
+n <- 21
+
+# Indirectos.
+var <- sd**2
+```
+
+P(S2 <= s2) = p
+
+P(chisq <= chisq_without_s2 * s2) = p
+
+chisq_without_s2 * s2 = qchisq(p, n - 1)
+
+s2 = qchisq(p, n - 1) / chisq_without_s2
+```{r}
+chisq_without_s2 <- (n - 1) / var
+s2 <- qchisq(p, n-1) / chisq_without_s2
+s <- sqrt(s2)
+
+round(s, 2)
+```
+
+### 5. Probabilidad entre intervalos. Salario mensual promedio.
+
+#### Problema.
+
+El salario mensual promedio de los habitantes de una ciudad en México tiene una desviación estándar de **628** pesos y sigue una distribución normal. ¿Cuál es la probabilidad de que la desviación estándar muestral de los salarios  vaya de los  **447** a los **687** pesos, si el tamaño muestral es de **21**? 
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+sd <- 628
+s_min <- 447
+s_max <- 687
+n <- 21
+
+# Indirectos.
+var <- sd**2
+s2_min <- s_min**2
+s2_max <- s_max**2
+```
+
+P(s2_min <= S2 <= s2_max)
+```{r}
+q_min <- ((n - 1) * s2_min) / var
+q_max <- ((n - 1) * s2_max) / var
+
+p <- pchisq(q_max, n-1) - pchisq(q_min, n-1)
+round(p, 2)
+```
+
+### 6. Calcular s de la parte superior. Duración de baterias de juguetes.
+
+#### Problema.
+
+Una empresa que fabrica juguetes electrónicos afirma que las baterías que utilizan en sus productos tienen una duración nomalmente distribuida con una varianza de **100** minutos^2. Para un tamaño muestral de **10** baterías,  determina el valor de **s** para obtener una probabilidad del **0.79** de la parte superior de la distribución de la desviación estándar.
+
+Nota: redondea  ÚNICAMENTE hasta el final utlizando precisión de centésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+var <- 100
+n <- 10
+p <- 1 - 0.79 # Por ser la probabilidad de la parte superior.
+```
+
+P(S2 <= s2) = p
+
+P(chisq <= chisq_without_s2 * s2) = p
+
+chisq_without_s2 * s2 = qchisq(p, n - 1)
+
+s2 = qchisq(p, n - 1) / chisq_without_s2
+```{r}
+chisq_without_s2 <- (n - 1) / var
+s2 <- qchisq(p, n-1) / chisq_without_s2
+s <- sqrt(s2)
+
+round(s, 2)
+```
