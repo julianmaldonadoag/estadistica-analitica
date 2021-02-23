@@ -1,0 +1,412 @@
+---
+title: "Distribución de la diferencia entres dos medias muestrales"
+output: html_notebook
+---
+
+## Ejercicios de práctica.
+
+### 1. Varianzas poblacionales desconocidas con n's > 30. Edades de estudiantes. P dif mayor.
+
+#### Problema.
+
+Las edades promedio de los estudiantes de dos universidades son **18.96** y **22.46** años respectivamente. Dada una muestra aleatoria de **103** estudiantes de la primera universidad, se obtuvo que la varianza era **0.94** años2, y para **131** estudiantes de la segunda universidad, se obtuvo que la varianza era de **1.17** años2. Si se supone que las poblaciones son normales, ¿cuál es la probabilidad de que la diferencia de las medias muestrales de las edades sea mayor que **3.57** años?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean_1 <- 18.96
+mean_2 <- 22.46
+n_1 <- 103
+S2_1 <- 0.94
+n_2 <- 131
+S2_2 <- 1.17
+q <- 3.57
+```
+
+Formulas. Para muestras mayores a 30.
+```{r}
+mean_dif <- mean_1 - mean_2
+S2_dif <- (S2_1 / n_1) + (S2_2 / n_2)
+
+S_dif <- sqrt(S2_dif)
+```
+
+Recordando que: |a| > b = a > b U a < -b
+
+P(|X~1 - X~2| > q) = P(X~1 - X~2 > q) + P(X~1 - X~2 < -q)
+
+= 1 - P(X~1 - X~2 <= q) + P(X~1 - X~2 < -q)
+```{r}
+p <- 1 - pnorm(q, mean_dif, S_dif) + pnorm(-q, mean_dif, S_dif)
+
+round(p, 3)
+```
+
+
+### 2. Varianzas poblacionales conocidas. Duración de televisores. Por lo menos.
+
+#### Problema.
+
+Los televisores del fabricante A tienen una duración media de **14.37** años y una desviación estándar de **1.35** años; mientras que los del fabricante B tienen una duración media de **7.59** años y una desviación estándar de **1.95** años. ¿Cuál es la probabilidad de que una muestra aleatoria de **75** televisores del fabricante A tenga por lo menos **6.65** años más de vida media que una muestra de **136** televisores del fabricante B?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+####  Solución.
+
+Datos.
+```{r}
+mean_a <- 14.37
+sd_a <- 1.35
+mean_b <- 7.59
+sd_b <- 1.95
+n_a <- 75
+n_b <- 136
+q <- 6.65
+```
+
+Formulas.
+```{r}
+mean_dif <- mean_a - mean_b
+var_dif <- (sd_a**2 / n_a) + (sd_b**2 / n_b)
+
+sd_dif <- sqrt(var_dif)
+```
+
+
+P(X~a > q + X~b) = P(X~a - X~b > q)
+
+= 1 - P(X~a - X~b <= q)
+```{r}
+p <- 1- pnorm(q, mean_dif, sd_dif)
+
+round(p, 3)
+```
+
+### 3. Varianzas poblacionales conocidas. Comparación entre 2 pinturas. P mayor.
+
+#### Problema.
+
+Se llevan a cabo dos experimentos independientes en los que se comparan dos tipos diferentes de pintura, A y B. Con la pintura A se pintan **73** especímenes y se registra el tiempo (en horas) que cada uno tarda en secar. Lo mismo se hace con **39** especímenes pintados con la pintura tipo B. Se sabe que las desviaciones estándar de las poblaciones son, repectivamente, **σA=3.96** y **σB=3.3** horas. Si se supone que los especímenes pintados con la pintura tipo A tardan en secar, en media, **21.37** horas más que los pintados con la tipo B, calcula **P(X¯A−X¯B > 20.42)**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_a <- 73
+n_b <- 39
+sd_a <- 3.96
+sd_b <- 3.3
+mean_dif <- 21.37
+q <- 20.42
+```
+
+Formulas.
+```{r}
+var_dif <- (sd_a**2 / n_a) + (sd_b**2 / n_b)
+
+sd_dif <- sqrt(var_dif)
+```
+
+P(X~A - X~B > q) =  1 - P(X~A - X~B < q)
+```{r}
+p <- 1 - pnorm(q, mean_dif, sd_dif)
+
+round(p, 3)
+```
+
+### 4. Varianzas poblacionales desconocidas e iguales. Enseñanza de lectura. P menor.
+
+#### Problema.
+
+Se aplicaron dos métodos para enseñar a leer a dos grupos de primaria que se eligieron en forma aleatoria y se realizó una comparación con base en una prueba de lectura al final del período de enseñanza. Las muestras tienen medias de 75.07 y 80.28 y varianzas de  **0.4** y **0.31**  respectivamente, donde los tamaños de las muestras son **27** y **21** respectivamente. Si se supone que las puntuaciones obtenidas por cada método son normales con medias poblacionales de  **75.04** y **80.36**  respectivamente y que las varianzas poblacionales son desconocidas e iguales, calcula la probabilidad de que el segundo método de enseñanza asegure un promedio de no más de **5.21** puntos por encima del primero.
+
+Nota: redondea ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+S2_1 <- 0.4
+S2_2 <- 0.31
+n_1 <- 27
+n_2 <- 21
+mean_1 <- 75.04
+mean_2 <- 80.36
+q <- 5.21
+```
+
+Que el segundo método de enseñanza asegure un promedio de no más de **q** puntos por encima del primero.
+
+Es equivalente a: X~2 < q + X~1 = X~2 - X~1 < q
+```{r}
+mean_dif <- mean_2 - mean_1
+
+# Por suposición de varianzas iguales.
+S_dif <- sqrt( (1/n_1 + 1/n_2) * ( ((n_1 - 1)*S2_1 + (n_2 - 1)*S2_2) / (n_1 + n_2 - 2) ) )
+k <- n_1 + n_2 - 2 
+```
+
+P(X~2 - X~1 < q)
+```{r}
+t <- (q - mean_dif) / S_dif
+
+p <- pt(t, k)
+
+round(p, 3)
+```
+
+
+## Ejercicios de evaluación.
+
+### 1. Varianzas poblacionales desconocidas con n's > 30. Edades de estudiantes. P dif.
+
+#### Problema.
+
+Las edades promedio de los estudiantes de dos universidades son **18.92** y **24.95** años respectivamente. Se toma una muestra de edades de la primera universidad obteniendo los siguientes resultados (en años): 
+18.79, 18.44, 16.86, 18.95, 18.15, 19.46, 20.35, 18.19, 20.46, 19.99, 21.6, 17.74, 16.53, 17.97, 17.01, 20.92, 19.21, 18.51, 18.96, 20.02, 17.49, 20.16, 18.33, 19.95, 18.19, 19.34, 18.74, 20.06, 19.56, 18.65, 18.93. 
+En la segunda universidad se tomó la siguiente muestra (en años): 
+24.84, 23.46, 25.4, 26.68, 23.79, 23.98, 26.09, 25.87, 21.51, 23.75, 24.13, 23.39, 23.12, 24.58, 25.55, 24.17, 27.94, 24.51, 23.89, 24.41, 24.76, 26.82, 28.63, 24.61, 23.79, 26.65, 25.93, 25.56, 24.47, 26.77, 23.68. 
+Si se supone que las poblaciones son normales, ¿cuál es la probabilidad de que la diferencia de las medias muestrales de las edades sea menor que la diferencia absoluta entre los promedios de dichas muestras?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean_1 <- 18.92
+mean_2 <- 24.95
+data_1 <- c(18.79, 18.44, 16.86, 18.95, 18.15, 19.46, 20.35, 18.19, 20.46, 19.99, 21.6, 17.74, 16.53, 17.97, 17.01, 20.92, 19.21, 18.51, 18.96, 20.02, 17.49, 20.16, 18.33, 19.95, 18.19, 19.34, 18.74, 20.06, 19.56, 18.65, 18.93)
+data_2 <- c(24.84, 23.46, 25.4, 26.68, 23.79, 23.98, 26.09, 25.87, 21.51, 23.75, 24.13, 23.39, 23.12, 24.58, 25.55, 24.17, 27.94, 24.51, 23.89, 24.41, 24.76, 26.82, 28.63, 24.61, 23.79, 26.65, 25.93, 25.56, 24.47, 26.77, 23.68)
+
+# Indirectos.
+n_1 <- length(data_1)
+n_2 <- length(data_2)
+
+S2_1 <- sd(data_1)**2
+S2_2 <- sd(data_2)**2
+
+x_1 <- mean(data_1) # Promedio muestral de la universidad 1.
+x_2 <- mean(data_2) # Promedio muestral de la universidad 2.
+
+x_dif <- abs(x_1 - x_2) # Diferencia absoluta entre los promedios de dichas muestras
+```
+
+Formulas. Para muestras mayores a 30.
+```{r}
+mean_dif <- mean_1 - mean_2
+S2_dif <- (S2_1 / n_1) + (S2_2 / n_2)
+
+S_dif <- sqrt(S2_dif)
+```
+
+Recordando que: |a| < b = -b < a < b.
+
+P(|X~1 - X~2| < x_dif) = P(X~1 - X~2 < x_dif) - P(X~1 - X~2 < -x_dif)
+```{r}
+p <- pnorm(x_dif, mean_dif, S_dif) - pnorm(-x_dif, mean_dif, S_dif)
+
+round(p, 3)
+```
+
+
+### 2. Varianzas poblacionales desconocidas con n's > 30. Edades de estudiantes. P dif menor.
+
+#### Problema.
+
+Las edades promedio de los estudiantes de dos universidades son **21.8** y **25.62** años respectivamente. Dada una muestra aleatoria de **52** estudiantes de la primera universidad, se obtuvo que la varianza era **6.69** años2, y para **66** estudiantes de la segunda universidad, se obtuvo que la varianza era de **0.38** años2. Si se supone que las poblaciones son normales, ¿cuál es la probabilidad de que la diferencia de las medias muestrales de las edades sea menor que **3.54** años?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+mean_1 <- 21.8
+mean_2 <- 25.62
+n_1 <- 52
+S2_1 <- 6.69
+n_2 <- 66
+S2_2 <- 0.38
+q <- 3.54
+```
+
+Formulas. Para muestras mayores a 30.
+```{r}
+mean_dif <- mean_1 - mean_2
+S2_dif <- (S2_1 / n_1) + (S2_2 / n_2)
+
+S_dif <- sqrt(S2_dif)
+```
+
+Recordando que: |a| < b = -b < a < b.
+
+P(|X~1 - X~2| < q) = P(X~1 - X~2 < q) - P(X~1 - X~2 < -q)
+```{r}
+p <- pnorm(q, mean_dif, S_dif) - pnorm(-q, mean_dif, S_dif)
+
+round(p, 3)
+```
+
+### 3. Varianzas poblacionales conocidas. Comparación entre 2 pinturas. P menor.
+
+#### Problema.
+
+Se llevan a cabo dos experimentos independientes en los que se comparan dos tipos diferentes de pintura, A y B. Con la pintura A se pintan **83** especímenes y se registra el tiempo (en horas) que cada uno tarda en secar. Lo mismo se hace con **91** especímenes pintados con la pintura tipo B. Se sabe que las desviaciones estándar de las poblaciones son, repectivamente, **σA=2.82** y **σB=4.81** horas. Si se supone que los especímenes pintados con la pintura tipo A tardan en secar, en media, **11.54** horas más que los pintados con la tipo B, calcula **P(X¯A−X¯B < 11.09)**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_a <- 83
+n_b <- 91
+sd_a <- 2.82
+sd_b <- 4.81
+mean_dif <- 11.54
+q <- 11.09
+```
+
+Formulas.
+```{r}
+var_dif <- (sd_a**2 / n_a) + (sd_b**2 / n_b)
+
+sd_dif <- sqrt(var_dif)
+```
+
+P(X~A - X~B < q)
+```{r}
+p <- pnorm(q, mean_dif, sd_dif)
+
+round(p, 3)
+```
+
+
+### 4. Varianzas poblacionales desconocidas e iguales. Enseñanza de lectura. P mayor.
+
+#### Problema.
+
+Se aplicaron dos métodos para enseñar a leer a dos grupos de primaria que se eligieron en forma aleatoria y se realizó una comparación con base en una prueba de lectura al final del período de enseñanza. Las muestras tienen medias de 72.12 y 88.83 y varianzas de  **2.65** y **3.12**  respectivamente, donde los tamaños de las muestras son **29** y **29** respectivamente. Si se supone que las puntuaciones obtenidas por cada método son normales con medias poblacionales de  **71.96** y **89.22**  respectivamente y que las varianzas poblacionales son desconocidas e iguales, calcula la probabilidad de que el segundo método de enseñanza asegure un promedio de al menos **16.71** puntos por encima del primero.
+
+Nota: redondea ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+S2_1 <- 2.65
+S2_2 <- 3.12
+n_1 <- 29
+n_2 <- 29
+mean_1 <- 71.96
+mean_2 <- 89.22
+q <- 16.71
+```
+
+Que el segundo método de enseñanza asegure un promedio de al menos **q** puntos por encima del primero.
+
+Es equivalente a: X~2 > q + X~1 = X~2 - X~1 > q
+
+= [X~2 - X~1 > q] * -1 = X~1 - X~2 < -q
+```{r}
+mean_dif <- mean_1 - mean_2
+
+# Por suposición de varianzas iguales.
+S_dif <- sqrt( (1/n_1 + 1/n_2) * ( ((n_1 - 1)*S2_1 + (n_2 - 1)*S2_2) / (n_1 + n_2 - 2) ) )
+k <- n_1 + n_2 - 2 
+```
+
+P(X~1 - X~2 < -q)
+```{r}
+t <- (-q - mean_dif) / S_dif
+
+p <- pt(t, k)
+
+round(p, 3)
+```
+
+### 5. Varianzas poblacionales desconocidas y diferentes. Enseñanza de lectura. P mayor.
+
+#### Problema.
+
+Se aplicaron dos métodos para enseñar a leer a dos grupos de primaria que se eligieron en forma aleatoria y se realizó una comparación con base en una prueba de lectura al final del período de enseñanza. Las muestras tienen medias de 75.48 y 81.64 y varianzas de  **4.14** y **35.28**  respectivamente, donde los tamaños de las muestras son **8** y **9** respectivamente. Si se supone que las puntuaciones obtenidas por cada método son normales con medias poblacionales de  **74.31** y **81.01**  respectivamente y que las varianzas poblacionales son desconocidas y distintas, calcula la probabilidad de que el segundo método de enseñanza asegure un promedio de al menos **6.16** puntos por encima del primero.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+S2_1 <- 4.14
+S2_2 <- 35.28
+n_1 <- 8
+n_2 <- 9
+mean_1 <- 74.31
+mean_2 <- 81.01
+q <- 6.16
+```
+
+Que el segundo método de enseñanza asegure un promedio de al menos **q** puntos por encima del primero.
+
+Es equivalente a: X~2 > q + X~1 = X~2 - X~1 > q
+
+= [X~2 - X~1 > q] * -1 = X~1 - X~2 < -q
+```{r}
+mean_dif <- mean_1 - mean_2
+
+# Por suposición de varianzas distintas.
+S_dif <- sqrt( (S2_1 / n_1) + (S2_2 / n_2) )
+k <- ((S2_1 / n_1) + (S2_2 / n_2))**2 / (((S2_1/n_1)**2 / (n_1 - 1)) + ((S2_2/n_2)**2 / (n_2 - 1)))
+```
+
+P(X~1 - X~2 < -q)
+```{r}
+t <- (-q - mean_dif) / S_dif
+
+p <- pt(t, k)
+
+round(p, 3)
+```
+
+### 6. Varianzas poblacionales conocidas. Duración de televisores. A lo sumo.
+
+#### Problema.
+
+Los televisores del fabricante A tienen una duración media de **13** años y una desviación estándar de **0.52** años; mientras que los del fabricante B tienen una duración media de **7.69** años y una desviación estándar de **1.96** años. ¿Cuál es la probabilidad de que una muestra aleatoria de **73** televisores del fabricante A tenga a lo sumo **5.11** años más de vida media que una muestra de **120** televisores del fabricante B?
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+####  Solución.
+
+Datos.
+```{r}
+mean_a <- 13
+sd_a <- 0.52
+mean_b <- 7.69
+sd_b <- 1.96
+n_a <- 73
+n_b <- 120
+q <- 5.11
+```
+
+Formulas.
+```{r}
+mean_dif <- mean_a - mean_b
+var_dif <- (sd_a**2 / n_a) + (sd_b**2 / n_b)
+
+sd_dif <- sqrt(var_dif)
+```
+
+
+P(X~a < q + X~b) = P(X~a - X~b < q)
+```{r}
+p <- pnorm(q, mean_dif, sd_dif)
+
+round(p, 3)
+```

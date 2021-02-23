@@ -1,0 +1,379 @@
+---
+title: "Distribución F"
+output: html_notebook
+---
+
+## Ejercicios de práctica.
+
+### 1. Calcular P superior. Desviación estandar iguales.
+
+#### Problema.
+
+Se aplican pruebas a **14** cables conductores soldados a un dispositivo semiconductor con el fin de determinar su resistencia a la tracción. Las pruebas demostraron que para romper la unión se requieren las libras de fuerza que se listan a continuación: 
+15.79, 12.96, 13.17, 13.79, 16.06, 18.48, 15.31, 13.67, 14.73, 18.48, 14.07, 15.5, 16.39, 16.08. 
+Otro conjunto de **17** cables conductores que forman un dispositivo se encapsuló y se probó para determinar si el encapsulado aumentaba la resistencia a la tracción. Las pruebas dieron los siguientes resultados:
+24.39, 24.47, 25.88, 25.22, 27.82, 25.17, 23.93, 24.13, 24.36, 21.25, 21.73, 21.7, 25.03, 20.88, 24.86, 28.85, 22.15. 
+Suponiendo normalidad de los datos, ¿cuál es la probabilidad de que el cociente de las varianzas muestrales de los cables sin encapsular entre los encapsulados sea superior a s12/s22, donde s12 y s22 son las varianzas de los cables sin encapsular y los encapsulados, respecivamente? Supón que las desviaciones estándar poblacionales son iguales.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 14
+n_2 <- 17
+data_1 <- c(15.79, 12.96, 13.17, 13.79, 16.06, 18.48, 15.31, 13.67, 14.73, 18.48, 14.07, 15.5, 16.39, 16.08)
+data_2 <- c(24.39, 24.47, 25.88, 25.22, 27.82, 25.17, 23.93, 24.13, 24.36, 21.25, 21.73, 21.7, 25.03, 20.88, 24.86, 28.85, 22.15)
+
+# Indirectos.
+S2_1 <- sd(data_1)**2
+S2_2 <- sd(data_2)**2
+```
+
+P(S2_1 / S2_2 > S2_1 / S2_2)
+
+= 1 - P(S2_1 / S2_2 < S2_1 / S2_2)
+```{r}
+p <- 1 - pf(S2_1 / S2_2, n_1 - 1, n_2 - 1) 
+
+round(p, 3)
+```
+
+### 2. Calcular valor de x menor. Varianzas iguales.
+
+#### Problema.
+
+Si S_1^2 y S_2^2 representan las varianzas de muestras aleatorias independientes de tamaños **n1=48** y **n2=19**, tomadas de poblaciones normales con varianzas iguales, calcula el valor de **x** para el cual **P(S2_1/S2_2 < x)=0.026**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 48
+n_2 <- 19
+p <- 0.026
+```
+
+Formulas.
+```{r}
+k_1 <- n_1 - 1
+k_2 <- n_2 - 1
+```
+
+P(S2_1/S2_2 < x) = p
+```{r}
+x <- qf(p, k_1, k_2)
+
+round(x, 3)
+```
+
+### 3. Calcular P entre intervalos. Dada desviaciones estandar. S2_2 / S2_1
+
+#### Problema.
+
+Si S12 y S22 representan las varianzas de muestras aleatorias independientes de tamaños **n1=33** y **n2=19**, tomadas de poblaciones normales con desviaciones estándar **σ1=2.17** y **σ2=3.22**, respectivamente, calcula **P(1.9≤S22/S12≤2.09)**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 33
+n_2 <- 19
+sd_1 <- 2.17
+sd_2 <- 3.22
+lim_min <- 1.9
+lim_max <- 2.09
+
+# Indirectos.
+var_1 <- sd_1**2
+var_2 <- sd_2**2
+```
+
+Formulas.
+Recordemos que cuando las varianzas poblaciones son distintas: 
+
+S2_1 / S2_2 = (S2_1 * var_2) / (S2_2 * var_1)
+```{r}
+# Por ser S2_2 / S2_1
+k_1 <- n_2 - 1
+k_2 <- n_1 - 1
+
+f_min <- lim_min * var_1 / var_2
+f_max <- lim_max * var_1 / var_2
+```
+
+P(f_min ≤ S22/S12 ≤ f_max)
+```{r}
+p <- pf(f_max, k_1, k_2) - pf(f_min, k_1, k_2)
+
+round(p, 3)
+```
+
+### 4. Calcular P menor. Varianzas iguales.
+
+#### Problema.
+
+Si S12 y S22 representan las varianzas de muestras aleatorias independientes de tamaños **n1=28** y **n2=38**, tomadas de poblaciones normales con varianzas iguales, calcula **P(S12/S22<1.01)**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 28
+n_2 <- 38
+q <- 1.01
+```
+
+P(S2_1/S2_2 < q)
+```{r}
+p <- pf(q, n_1 - 1, n_2 - 1)
+
+round(p, 3)
+```
+
+## Ejercicios de evaluación.
+
+### 1. Calcular P entre intervalos. Varianzas iguales.
+
+#### Problema.
+
+Si S12 y S21 representan las varianzas de muestras aleatorias independientes de tamaños **n1=16** y **n2=45**, tomadas de poblaciones normales con varianzas iguales, calcula **P(0.32≤S12/S22≤0.39)**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 16
+n_2 <- 45
+lim_min <- 0.32
+lim_max <- 0.39
+```
+
+Formulas.
+```{r}
+k_1 <- n_1 - 1
+k_2 <- n_2 - 1
+```
+
+Como las varianzas son iguales. 
+P(lim_min < S2_1/S2_2 < lim_max)
+```{r}
+p <- pf(lim_max, k_1, k_2) - pf(lim_min, k_1, k_2)
+
+round(p, 3)
+```
+
+### 2. Calcular P inferior. Desviación estandar iguales.
+
+#### Problema.
+
+Se aplican pruebas a **14** cables conductores soldados a un dispositivo semiconductor con el fin de determinar su resistencia a la tracción. Las pruebas demostraron que para romper la unión se requieren las libras de fuerza que se listan a continuación: 
+22.88, 28.42, 26.81, 23.26, 26.87, 23.29, 28.21, 25.45, 25.57, 27.07, 22.64, 24.23, 21.55, 28.28.
+Otro conjunto de **5** cables conductores que forman un dispositivo se encapsuló y se probó para determinar si el encapsulado aumentaba la resistencia a la tracción. Las pruebas dieron los siguientes resultados: 18.62, 23.78, 20.2, 21.24, 21.77. 
+Suponiendo normalidad de los datos, ¿cuál es la probabilidad de que el cociente de las varianzas muestrales de los cables sin encapsular entre los encapsulados sea inferior a s12/s22, donde s12 y s22 son las varianzas de los cables sin encapsular y los encapsulados, respecivamente? Supón que las desviaciones estándar poblacionales son iguales.Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 14
+n_2 <- 5
+data_1 <- c(22.88, 28.42, 26.81, 23.26, 26.87, 23.29, 28.21, 25.45, 25.57, 27.07, 22.64, 24.23, 21.55, 28.28)
+data_2 <- c(18.62, 23.78, 20.2, 21.24, 21.77)
+
+# Indirectos.
+S2_1 <- sd(data_1)**2
+S2_2 <- sd(data_2)**2
+```
+
+P(S2_1 / S2_2 < S2_1 / S2_2)
+```{r}
+p <- pf(S2_1 / S2_2, n_1 - 1, n_2 - 1) 
+
+round(p, 3)
+```
+
+### 3. Calcular P menor. Dada desviaciones estandar. S2_2 / S2_1.
+
+#### Problema.
+
+Si S12 y S22 representan las varianzas de muestras aleatorias independientes de tamaños **n1=10** y **n2=15**, tomadas de poblaciones normales con desviaciones estándar **σ1=2.11** y **σ2=1.99**, respectivamente, calcula **P(S22/S12 < 2.25)**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 10
+n_2 <- 15
+sd_1 <- 2.11
+sd_2 <- 1.99
+q <- 2.25
+
+# Indirectos.
+var_1 <- sd_1**2
+var_2 <- sd_2**2
+```
+
+Formulas.
+Recordemos que cuando las varianzas poblaciones son distintas: 
+
+S2_1 / S2_2 = (S2_1 * var_2) / (S2_2 * var_1)
+```{r}
+# Por S2_2 / S2_1
+k_1 <- n_2 - 1
+k_2 <- n_1 - 1
+
+f <- q * var_1 / var_2
+```
+
+P(S22/S12 < f)
+```{r}
+p <- pf(f, k_1, k_2)
+
+round(p, 3)
+```
+
+### 4. Calcular P inferior. Dada desviaciones estandar. S2_B / S2_A.
+
+#### Problema.
+
+Se toman dos muestras provenientes de dos lagos, A y B, para determinar la cantidad de sólidos totales disueltos, obteniendo los siguientes resultados (en ppm):
+Lago A: 171.93, 193.91, 178.91, 190.49, 178.62, 184.21, 179.96, 181.43, 198.74, 190.93
+y Lago B: 
+216.17, 221.1, 223.07, 207.74, 217.16, 205.17, 220.34. 
+Suponiendo normalidad de los datos, ¿cuál es la probabilidad de que el cociente de las varianzas muestrales del Lago B entre el Lago A, sea inferior a **sB2/sA2**, donde sA2 y sB2 son las varianzas de las muestras del Lago A y Lago B, respecivamente? Supón que las desviaciones estándar poblacionales son, respectivamente,  **σA=8.48** y **σB=6.82**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+data_a <- c(171.93, 193.91, 178.91, 190.49, 178.62, 184.21, 179.96, 181.43, 198.74, 190.93)
+data_b <- c(216.17, 221.1, 223.07, 207.74, 217.16, 205.17, 220.34)
+sd_a <- 8.48
+sd_b <- 6.82
+
+# Indirectos.
+n_a <- length(data_a)
+n_b <- length(data_b)
+
+S2_a <- sd(data_a)**2
+S2_b <- sd(data_b)**2
+
+var_a <- sd_a**2
+var_b <- sd_b**2
+```
+
+Formulas.
+```{r}
+# Por S2_B / S2_A
+k_a <- n_b - 1
+k_b <- n_a - 1
+```
+
+P(S2_b / S2_a < S2_b / S2_a)
+
+= P(S2_b / S2_a < [(S2_b * var_a) / (S2_a * var_b)])
+```{r}
+q <- (S2_b * var_a) / (S2_a * var_b)
+
+p <- pf(q, k_a, k_b)
+
+round(p, 3)
+```
+
+### 5. Calcular valor de x mayor. Varianzas iguales.
+
+#### Problema.
+
+Si S_1^2 y S_2^2 representan las varianzas de muestras aleatorias independientes de tamaños **n1=48** y **n2=39**, tomadas de poblaciones normales con varianzas iguales, calcula el valor de **x** para el cual **P(S2_1/S2_2 > x)=0.373**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 48
+n_2 <- 39
+p <- 0.373
+```
+
+Formulas.
+```{r}
+k_1 <- n_1 - 1
+k_2 <- n_2 - 1
+```
+
+P(S2_1/S2_2 > x) = p
+
+1 - P(S2_1/S2_2 < x) = p
+
+P(S2_1/S2_2 < x) = 1 - p
+```{r}
+x <- qf(1 - p, k_1, k_2)
+
+round(x, 3)
+```
+
+### 6. Calcular valor de x mayor. Dada desviaciones estandar.
+
+#### Problema.
+
+Si S12 y S22 representan las varianzas de muestras aleatorias independientes de tamaños **n1=19** y **n2=24**, tomadas de poblaciones normales con desviaciones estándar **σ1=0.54** y **σ2=0.79**, respectivamente, calcula el valor de x para el cual **P(S12/S22>x)=0.83**.
+
+Nota: redondea  ÚNICAMENTE hasta el final utilizando precisión de milésimas.
+
+#### Solución.
+
+Datos.
+```{r}
+n_1 <- 19
+n_2 <- 24
+sd_1 <- 0.54
+sd_2 <- 0.79
+p <- 0.83
+
+# Indirectos.
+var_1 <- sd_1**2
+var_2 <- sd_2**2
+```
+
+Formulas.
+```{r}
+k_1 <- n_1 - 1
+k_2 <- n_2 - 1
+```
+
+P(S2_1/S2_2 > x) = p
+
+1 - P(S2_1/S2_2 < x) = p
+
+P(S2_1/S2_2 < x) = 1 - p
+```{r}
+x <- qf(1 - p, k_1, k_2)
+```
+
+Recordemos que cuando las varianzas poblaciones son distintas: 
+
+S2_1 / S2_2 = (S2_1 * var_2) / (S2_2 * var_1)
+```{r}
+# x = q * var_2 / var_1. Por lo tanto.
+q <- x * var_1 / var_2
+round(q, 3)
+```
+
