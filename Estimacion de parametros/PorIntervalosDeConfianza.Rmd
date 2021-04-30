@@ -9,6 +9,7 @@ output: html_notebook
 - var: varianza poblacional.
 - s: desviacion estandar muestral.
 - s_cuadrado: varianza muestral.
+- x: media muestral.
 
 ## Intervalos para la media y la varianza.
 
@@ -30,8 +31,7 @@ n <- 36
 Li <- x - qnorm(1 - alfa/2) * sd/sqrt(n)
 Ls <- x + qnorm(1 - alfa/2) * sd/sqrt(n)
 
-round(Li, 2)
-round(Ls, 2)
+print( c(round(Li, 2), round(Ls, 2)) )
 ```
 
 ### Media. Caso 2.
@@ -51,8 +51,7 @@ n <- 15
 Li <- x - qt(1 - alfa/2, n-1) * s/sqrt(n)
 Ls <- x + qt(1 - alfa/2, n-1) * s/sqrt(n)
 
-round(Li, 2)
-round(Ls, 2)
+print( c(round(Li, 2), round(Ls, 2)) )
 ```
 
 ### Media. Caso 3.
@@ -74,8 +73,7 @@ n <- length(datos)
 Li <- x - qnorm(1 - alfa/2) * s/sqrt(n)
 Ls <- x + qnorm(1 - alfa/2) * s/sqrt(n)
 
-round(Li, 2)
-round(Ls, 2)
+print( c(round(Li, 2), round(Ls, 2)) )
 ```
 
 ### Varianza. Unico caso.
@@ -94,8 +92,7 @@ n <- length(datos)
 Li <- (s**2 * (n-1)) / qchisq(1 - alfa/2, n-1)
 Ls <- (s**2 * (n-1)) / qchisq(alfa/2, n-1)
 
-round(Li, 3)
-round(Ls, 3)
+print( c(round(Li, 3), round(Ls, 3)) )
 ```
 
 
@@ -130,8 +127,7 @@ n2 <- 50
 Li <- (x1 - x2) - qnorm(1 - alfa/2) * sqrt(sd1**2/n1 + sd2**2/n2)
 Ls <- (x1 - x2) + qnorm(1 - alfa/2) * sqrt(sd1**2/n1 + sd2**2/n2)
 
-round(Li, 2)
-round(Ls, 2)
+print( c(round(Li, 2), round(Ls, 2)) )
 ```
 
 ### Diferencia de medias. Caso 2
@@ -155,11 +151,10 @@ n2 <- 10
 k <- n1 + n2 - 2
 sp <- sqrt(( (n1-1)*s1**2 + (n2-1)*s2**2 ) / k)
 
-Li <- (x1 - x2) - qt(1 - alfa/2, k) * sp * sqrt(1**2/n1 + 1**2/n2)
-Ls <- (x1 - x2) + qt(1 - alfa/2, k) * sp * sqrt(1**2/n1 + 1**2/n2)
+Li <- (x1 - x2) - qt(1 - alfa/2, k) * sp * sqrt(1/n1 + 1/n2)
+Ls <- (x1 - x2) + qt(1 - alfa/2, k) * sp * sqrt(1/n1 + 1/n2)
 
-round(Li, 3)
-round(Ls, 3)
+print( c(round(Li, 3), round(Ls, 3)) )
 ```
 
 ### Diferencia de medias. Caso 3
@@ -185,8 +180,7 @@ k <- (s1**2/n1 + s2**2/n2)**2 / (((s1**2/n1)**2 / (n1 - 1)) + ((s2**2/n2)**2 / (
 Li <- (x1 - x2) - qt(1 - alfa/2, k) * sqrt(s1**2/n1 + s2**2/n2)
 Ls <- (x1 - x2) + qt(1 - alfa/2, k) * sqrt(s1**2/n1 + s2**2/n2)
 
-round(Li, 3)
-round(Ls, 3)
+print( c(round(Li, 3), round(Ls, 3)) )
 ```
 
 ### Diferencia de medias. Caso 4
@@ -209,12 +203,10 @@ n2 <- 97
 Li <- (x1 - x2) - qnorm(1 - alfa/2) * sqrt(s1**2/n1 + s2**2/n2)
 Ls <- (x1 - x2) + qnorm(1 - alfa/2) * sqrt(s1**2/n1 + s2**2/n2)
 
-round(Li, 2)
-round(Ls, 2)
+print( c(round(Li, 2), round(Ls, 2)) )
 ```
 
 ### Razón de varianzas. Unico caso
-
 
 #### Supuestos
 
@@ -233,8 +225,7 @@ n2 <- 12
 Li <- s1**2 / (s2**2 * qf(1 - alfa/2, n1-1, n2-1))
 Ls <- s1**2 / (s2**2 * qf(alfa/2, n1-1, n2-1))
 
-round(Li, 3)
-round(Ls, 3)
+print( c(round(Li, 3), round(Ls, 3)) )
 ```
 
 ## Ejercicios de practica
@@ -325,8 +316,8 @@ n2 <- length(datos2)
 k <- n1 + n2 - 2
 sp <- sqrt(( (n1-1)*s1**2 + (n2-1)*s2**2 ) / k)
 
-Li <- (x1 - x2) - qt(1 - alfa/2, k) * sp * sqrt(1**2/n1 + 1**2/n2)
-Ls <- (x1 - x2) + qt(1 - alfa/2, k) * sp * sqrt(1**2/n1 + 1**2/n2)
+Li <- (x1 - x2) - qt(1 - alfa/2, k) * sp * sqrt(1/n1 + 1/n2)
+Ls <- (x1 - x2) + qt(1 - alfa/2, k) * sp * sqrt(1/n1 + 1/n2)
 
 print( c(round(Li, 2), round(Ls, 2)) )
 ```
@@ -452,13 +443,13 @@ alfa <- 1 - 0.89
 # la diferencia de medias de "despues y antes"
 x1 <- 81
 x2 <- 56
-sd1_cuadrado <- 10
-sd2_cuadrado <- 14
+var1 <- 10
+var2 <- 14
 n1 <- 110
 n2 <- 110
 
-Li <- (x1 - x2) - qnorm(1 - alfa/2) * sqrt(sd1_cuadrado/n1 + sd2_cuadrado/n2)
-Ls <- (x1 - x2) + qnorm(1 - alfa/2) * sqrt(sd1_cuadrado/n1 + sd2_cuadrado/n2)
+Li <- (x1 - x2) - qnorm(1 - alfa/2) * sqrt(var1/n1 + var2/n2)
+Ls <- (x1 - x2) + qnorm(1 - alfa/2) * sqrt(var1/n1 + var2/n2)
 
 print( c(round(Li, 2), round(Ls, 2)) )
 ```
