@@ -1,0 +1,320 @@
+---
+title: "Pruebas de hipótesis - Ejercicios"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+
+## Ejercicio 1.
+
+### Descripción.
+
+Para verificar si el proceso de llenado de bolsas de café con 500 gramos está operando correctamente se toma una muestra aleatoria de diez bolsas cada cuatro horas. Una de estas muestras está compuesta por las siguientes observaciones:
+
+502, 501, 497, 491, 496, 501, 502, 500, 489, 490
+
+Suponiendo que los datos son normales, ¿considera que el proceso de llenado es correcto? Use un nivel de significancia del 5%.
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+Según la información proporcionada, el parámetro a analizar es $\mu$, es decir el promedio de contenido de café en las bolsas de muestra. Por lo tanto, las hipótesis que se pueden plantear son:
+
+$H_0: \mu = 500$ (El proceso de llenado es correcto)
+
+$H_1: \mu \ne 500$ (El proceso de llenado no es correcto)
+
+2. **Selección del nivel de significancia:**
+
+El nivel de significancia ya es dado con un valor de $\alpha = 0.05$
+
+3. **Cálculo del estadístico de prueba:**
+
+Como los datos son normales, se desconoce la varianza de la población y la cantidad de datos no es muy grande, entonces el estadístico de prueba es:
+
+$t_{n-1} = \frac{\overline{X} - \mu}{S / \sqrt{n}}$
+
+Calculamos los datos que nos hacen falta a partir de la muestra proporcionada.
+
+```{r}
+data <- c(502, 501, 497, 491, 496, 501, 502, 500, 489, 490)
+mu <- 500
+
+x <- mean(data)
+s <- sd(data)
+n <- length(data)
+
+print( c(round(x,2), round(s,2), n) )
+```
+
+Valor de $t_{n-1} = t_9$
+
+```{r}
+t <- (x - mu) / (s / sqrt(n))
+round(t, 2)
+```
+
+4. **Formulación de la regla de decisión:**
+
+Dado que $\alpha = 0.05$ y tenemos una prueba bilateral, tenemos que calcular el valor de:
+
+$t_{\frac{\alpha}{2}},_{n-1} = t_{0.025},_9$, el cual es:
+
+```{r}
+round(qt(0.025, 9), 2)
+```
+
+y de $t_{1-\frac{\alpha}{2}},_{n-1} = t_{0.975},_9$, cuyo valor es:
+
+```{r}
+round(qt(0.975, 9), 2)
+```
+
+Por lo tanto, la regla de decisión es rechazar $H_0$ si $t_9 < -2.26$ o si $t_9 > 2.26$
+
+5. **Toma de decisión:**
+
+Dado que el estadístico de prueba $t_9 = -1.89 \nless t_{0.025},_9 = -2.26$ asi como  $t_9 = -1.89 \ngtr t_{0.975},_9 = 2.26$. Por lo tanto con un valor de significancia de 5% no se puede rechazar $H_{0}$  y se descarta $H_{1}$. Es decir, tomamos la decisión de que ${H_0}: \mu = 500$, concluyendo que el proceso de llenado es correcto.
+
+Podemos corroborar la decisión, usando la prueba p-valor de R. Donde podemos observar que el $p-value=0.09$ es mayor que el nivel de significancia con el que teniamos que evaluar la prueba $\alpha = 0.05$, por lo cual no podemos rechazar $H_0$.
+
+```{r}
+t.test(x = data, y = NULL, mu = 500, alternative = "two.sided", conf.level = 0.95)
+```
+
+## Ejercicio 2. 
+
+### Descripción.
+
+Se afirma que los automóviles recorren en promedio más de 20,000 kilómetros por año, pero usted cree que el promedio es en realidad menor. Para probar tal afirmación se pide a una muestra de 100 propietarios de automóviles seleccionada de manera aleatoria que lleven un registro de los kilómetros que recorren. ¿Estaría usted de acuerdo con la afirmación si la muestra aleatoria indicara un promedio de 19,500 kilómetros y una desviación estándar de 3,900 kilómetros? Utilice el *p-valor* en su conclusión y use una significancia del 3%. 
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+Según la información proporcionada, el parámetro a analizar es $\mu$, es decir el promedio de kilómetros que recorren por año los automóviles. Como se quiere probar que el promedio al año es menor a 20,000 kilómetros las hipótesis a plantear son:
+
+$H_0: \mu = 20,000$ (Automóviles recorren en promedio al menos 20,000 kilómetros al año)
+
+$H_1: \mu < 20,000$ (Automóviles recorren en promedio menos de 20,000 kilómetros al año)
+
+2. **Selección del nivel de significancia:**
+
+El nivel de significancia ya es dado con un valor de $\alpha = 0.03$
+
+3. **Cálculo del estadístico de prueba:**
+
+Como de desconoce la varianza de la población pero la muestra es grande, entonces nuestro estadístico de prueba es:
+
+$Z = \frac{\overline{X} - \mu}{S / \sqrt{n}}$
+
+Sustituyendo los datos tenemos que el valor de Z (redondeado a 2 decimales) es:
+
+```{r}
+mu <- 20000
+n <- 100
+x <- 19500
+s <- 3900
+
+Z <- (x - mu) / (s / sqrt(n))
+round(Z, 2)
+```
+
+4. **Formulación de la regla de decisión:**
+
+Como la prueba es unilateral, y $\alpha = 0.03$, tenemos que calcular $Z_{\alpha} = Z_{0.03}$, dando como resultado:
+
+```{r}
+round(qnorm(0.03), 2)
+```
+
+Entonces, la regla de decisión es rechazar $H_0$ si $Z < -1.88$
+
+5. **Toma de decisión:**
+
+Dado que el estadísticio de prueba $Z = -1.28 \nless Z_{0.3} = -1.88$, por lo tanto no se rechaza $H_0$ descartando $H_1$.
+
+Si calculamos el p-valor para corroborar la conclusión, es decir $P(Z < -1.28)$, redondeando a 2 decimales obtenemos:
+
+```{r}
+p_value <- pnorm(Z)
+round(p_value, 2)
+```
+
+Donde podemos ver que no se puede rechazar $H_0$ porque el valor de $\alpha = 0.03$ es menor que el $p-valor = 0.1$. 
+
+Por lo tanto se concluye que con $\alpha = 0.03$, $H_0$ se cumple, es decir los automóviles recorren en promedio más de 20,000 kilómetros al año.
+
+## Ejercicio 3.
+
+### Descripción.
+
+Un fabricante de un quitamanchas afirma que su producto quita el 90% de todas las manchas. Para poner a prueba esta afirmación se toman 200 camisetas manchadas de las cuales a solo 174 les desapareció la mancha. Prueba la afirmación del fabricante a un nivel $\alpha = 0.05$
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+Según la información proporcionada, el parámetro a analizar es *p*, es decir la proporción de manchas que puede quitar el producto del fabricante. Por lo tanto, las hipótesis a plantear son:
+
+$H_0: p = 0.9$ (La afirmación del fabricante es correcta)
+
+$H_1: p < 0.9$ (La afirmación del fabricante no es correcta)
+
+2. **Selección del nivel de significancia:**
+
+El nivel de significancia ya es dado con un valor de $\alpha = 0.05$
+
+3. **Cálculo del estadístico de prueba:**
+
+Como tenemos una muestra grande (200 camisetas) y ademas el parametro que queremos analizar es *p*, el estadístico de prueba es:
+
+$Z = \dfrac{\hat{p} - p}{\sqrt{ \frac{p(1-p)}{n} }}$
+
+Al calcular el valor de $Z$ con los datos proporcionados, obtenemos (redondeado a 2 decimales):
+
+```{r}
+p_hat <- 174 / 200
+p <- 0.90
+n <- 200
+Z <- (p_hat - p) / sqrt((p * (1-p)) / n)
+
+round(Z, 2)
+```
+
+4. **Formulación de la regla de decisión:**
+
+Dado que $\alpha = 0.05$ y que se tiene una prueba unilateral, tenemos que calcular el valor de $Z_{\alpha} = Z_{0.05}$, cuyo valor redondeado a 2 decimales es:
+
+```{r}
+round(qnorm(0.05), 2)
+```
+
+Entonces la regla de decisión es rechazar $H_0$ si $Z < -1.64$.
+
+5. **Toma de decisión:**
+
+Dado que el estadístico de prueba $Z = -1.41 \nless Z_{0.05} = -1.64$, no se rechaza $H_0$ y se descarta $H_1$. 
+
+Por lo tanto se concluye que con un valor $\alpha = 0.05$ no tenemos evidencias suficientes para rechazar $H_0$ lo que significa que $H_0$ se cumple, es decir la afirmación del fabricante es correcta, su producto quitamanchas quita el 90% de todas las manchas.
+
+## Ejercicio 4.
+
+### Descripción.
+
+Un asadero de pollos asegura que el 90% de sus órdenes se entregan en menos de 10 minutos. En una muestra de 200 órdenes, 170 se entregaron dentro de ese lapso. ¿Puede concluirse en el nivel de significancia $\alpha = 0.05$, que menos del 90% de las órdenes se entregan en menos de 10 minutos?
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+Según la información proporcionada, el parámetro a analizar es *p*, es decir la proporción de ódenes de pollos que se pueden entregar en menos de 10 minutos. Por lo tanto, las hipótesis a plantear son:
+
+$H_0: p = 0.9$ (El 90% de las órdenes de pollos se entregan en menos de 10 minutos)
+
+$H_1: p < 0.9$ (Menos del 90% de las órdenes de pollos se entregan en menos de 10 minutos)
+
+2. **Selección del nivel de significancia:**
+
+El nivel de significancia ya es dado con un valor de $\alpha = 0.05$
+
+3. **Cálculo del estadístico de prueba:**
+
+Como tenemos una muestra grande (200 órdenes) y ademas el parámetro que queremos analizar es *p*, el estadístico de prueba es:
+
+$Z = \dfrac{\hat{p} - p}{\sqrt{ \frac{p(1-p)}{n} }}$
+
+Al calcular el valor de $Z$ con los datos proporcionados, obtenemos (redondeado a 2 decimales):
+
+```{r}
+p_hat <- 170 / 200
+p <- 0.90
+n <- 200
+Z <- (p_hat - p) / sqrt((p * (1-p)) / n)
+
+round(Z, 2)
+```
+
+4. **Formulación de la regla de decisión:**
+
+Dado que $\alpha = 0.05$ y que se tiene una prueba unilateral, tenemos que calcular el valor de $Z_{\alpha} = Z_{0.05}$, cuyo valor redondeado a 2 decimales es:
+
+```{r}
+round(qnorm(0.05), 2)
+```
+
+Entonces la regla de decisión es rechazar $H_0$ si $Z < -1.64$.
+
+5. **Toma de decisión:**
+
+Dado que el estadístico de prueba $Z = -2.36 < Z_{0.05} = -1.64$, debemos rechazar $H_0$ y quedarnos con $H_1$. 
+
+Por lo tanto se concluye que con un valor $\alpha = 0.05$ tenemos evidencia  suficiente para rechazar $H_0$ lo que significa que $H_1$ se cumple, es decir menos del 90% de las órdenes de pollos se entregan en menos de 10 minutos
+
+## Ejercicio 5.
+
+### Descripción.
+
+Para verificar si el proceso de llenado de bolsas de café está operando con la variabilidad permitida se toma una muestra de diez bolsas cada cuatro horas. Una de estas muestra está compuesta por las siguientes observaciones:
+
+$502, 501, 497, 491, 496, 501, 502, 500, 489, 490$
+
+El proceso de llenado está bajo control si presenta una varianza de 40 o menos. ¿Está el proceso de llenado de bolsas bajo control? Use un nivel de significancia del 5%.
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+El parámetro de interés para este problema es la varianza. Por lo tanto las hipótesis que se pueden plantear son:
+
+$H_0: \sigma^2 = 40$ (El proceso de llenado de bolsas está bajo control)
+
+$H_1: \sigma^2 > 40$ (El proceso de llenado de bolsas no está bajo control)
+
+2. **Selección del nivel de significancia:**
+
+El nivel de significancia ya es dado con un valor de $\alpha = 0.05$
+
+3. **Cálculo del estadístico de prueba:**
+
+Como el parámetro de interés del problema es la varianza, entonces el estadístico de de prueba es:
+
+$\chi^2 = \dfrac{(n - 1)S^2}{\sigma^2}$
+
+Calculamos los datos necesarios de la muestra, para despues obtener el valor de $\chi^2$ con la formula anterior
+
+```{r}
+data <- c(502, 501, 497, 491, 496, 501, 502, 500, 489, 490)
+S <- sd(data)
+n <- length(data)
+var <- 40
+
+chisq <- ((n - 1) * S**2) / var
+round(chisq, 2)
+```
+
+4. **Formulación de la regla de decisión:**
+
+Dado que $\alpha = 0.05$ y que tenemos una prueba unilateral, tenemos que calcular el valor de $\chi^2_{1 - \alpha} = \chi^2_{0.95}$, cuyo valor es (redondeado a 2 decimales):
+
+```{r}
+round(qchisq(0.95, n-1), 2)
+```
+
+Entonces la regla de decisión es rechazar $H_0$ si $\chi^2 > 16.92$
+
+5. **Toma de decisión:**
+
+Dado que el estadístico de prueba $\chi^2 = 6.02 \ngtr \chi^2_{0.95} = 16.92$, no se rechaza $H_0$ y se descarta $H_1$, es decir se toma la decisión de quedarnos con $H_0$.
+
+Podemos corroborar la decisión tomada, apoyandonos del calculo del $p-valor$
+
+```{r}
+p_value <- 1 - pchisq(chisq, n-1)
+round(p_value, 4)
+```
+
+Como el $p-valor = 0.7377$, lo cual es muy superior al nivel $\alpha = 0.05$, no tenemos evidencia significativa para rechazar $H_0$.
+
+Por lo tanto podemos concluir que el proceso de llenado de bolsas de café esta bajo control
