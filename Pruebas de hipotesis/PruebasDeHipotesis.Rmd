@@ -356,7 +356,7 @@ $$Rural: 48, 44, 40, 38, 33, 21, 20, 12, 1, 18$$
 
 ### Solución.
 
-Considerando el subindice **u** como los datos de las comunidades urbanas y el subíndice **r** como los datos de las comunidades rurales. Podemos primero construir un *boxplot* con los datos proporcionados para comparar las concentraciones de arsenico en PPB según la zona. A continuación podemos ver el comparativo.
+Podemos primero construir un *boxplot* con los datos proporcionados para comparar las concentraciones de arsenico en PPB según la zona. A continuación podemos ver el comparativo.
 
 ```{r}
 data_u <- c(3, 7, 25, 10, 15, 6, 12, 25, 15, 7)
@@ -370,16 +370,19 @@ En la figura anterior podemos observar que si bien el mínimo y máximo de la zo
 
 * **Planteamiento de las hipótesis:**
 
-Ademas en la figura anterior como se puede observar la parte central de la caja para la zona Rural esta encima de la parte central de la caja para la zona urbana, por lo tanto las hipótesis a plantear para este problema son:
+Ademas en la figura anterior como se puede observar la parte central de la caja para la zona rural esta encima de la parte central de la caja para la zona urbana.
 
-$$H_0: \mu_r - \mu_u = 0 \text{ (No existen diferencias entre las concentraciones de arsénico de la zona urbana y rural)}$$
-$$H_1: \mu_r - \mu_u \ne 0 \text{ (Existen diferencias entre las concentraciones de arsénico de la zona urbana y rural)}$$
+Representando como $\mu_1$ y $\mu_2$ el promedio de las concentraciones de arsenico en las comunidades rurales y urbanas respectivamente. Entonces las hipótesis a plantear son las siguientes:
+
+$$H_0: \mu_1 - \mu_2 = 0 \text{ (No existen diferencias entre las concentraciones de arsénico de la zona urbana y rural)}$$
+$$H_1: \mu_1 - \mu_2 \ne 0 \text{ (Existen diferencias entre las concentraciones de arsénico de la zona urbana y rural)}$$
 
 * **Estadístico de prueba:**
 
 Para este tipo de prueba, como las varianzas poblacionales son desconocidas y ademas la muestra no es tan grande, el estadístico de prueba a utilizar es **t**. Solo que no conocemos si las varianzas poblaciones son iguales o distintas pero como las muestras son de zonas diferentes podemos asumir que son distintas, por lo tanto nuestro estadístico de prueba sera:
 
-$$t_{n_1 + n_2 - 2} = \frac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}}$$
+$$t_{k} = \frac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}}$$
+$$k = \frac{ (\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2})^2 }{ \frac{(S_1^2/n_1)^2}{n_1-1} +\frac{(S_2^2/n_2)^2}{n_2-1} }$$
 
 * **Cálculo del p-valor con R:**
 
@@ -412,10 +415,12 @@ Supón un nivel de significancia del 10%.
 
 1. **Planteamiento de las hipótesis:**
 
-Dado que nos dan la cantidad de piezas defectuosas y analizadas tanto antes y después del nuevo proceso, podemos obtener la media de piezas defectuosas del antes y después. Por otra parte como queremos saber si el método que se uso despues es mas efectivo, entonces la media de piezas defectuosas del método que se usaba antes tendria que ser mayor al que se usa después. Es decir las hipótesis a plantear son las siguientes:
+Dado que nos dan la cantidad de piezas defectuosas y analizadas tanto antes y después del nuevo proceso, podemos obtener la media de piezas defectuosas del antes y después. Por otra parte como queremos saber si el método que se uso despues es mas efectivo, entonces la media de piezas defectuosas del método que se usaba antes tendria que ser mayor al que se usa después. 
 
-$$H_0: \mu_{antes} - \mu_{despues} = 0 \text{ (El método que se uso después no es más efectivo del que se usaba antes)}$$
-$$H_1: \mu_{antes} - \mu_{despues} > 0 \text{ (El método que se uso después es más efectivo del que se usaba antes)}$$
+Representando como $\mu_1$ y $\mu_2$ el promedio de piezas defectuosas que se usaban antes y después respectivamente. Entonces las hipótesis a plantear son las siguientes:
+
+$$H_0: \mu_{1} - \mu_{2} = 0 \text{ (El método que se uso después no es más efectivo del que se usaba antes)}$$
+$$H_1: \mu_{1} - \mu_{2} > 0 \text{ (El método que se uso después es más efectivo del que se usaba antes)}$$
 
 2. **Cálculo del estadístico de prueba:**
 
@@ -449,7 +454,8 @@ $$P(Z > 1.4) = 1 - P(Z < 1.4)$$
 Si calculamos la operación anterior, con el valor completo de **Z**, obtenemos que el **p-valor** es: (redondeado a 4 decimales):
 
 ```{r}
-round(1 - pnorm(Z), 4)
+p_value <- 1 - pnorm(Z)
+round(p_value, 4)
 ```
 
 4. **Toma de decisión:**
@@ -473,16 +479,20 @@ Diez individuos participaron de programa para perder peso corporal por medio de 
 
 * **Planteamiento de las hipótesis:**
 
-Como queremos probar si la dieta hizo que el peso promedio de los sujetos disminuyera, entonces el peso promedio del peso que tenian antes deberia ser mayor que el peso promedio después de la dieta. Es decir las hipótesis que se pueden plantear son las siguientes:
+Como queremos probar si la dieta hizo que el peso promedio de los participantes disminuyera, entonces el peso promedio del peso que tenian antes deberia ser mayor que el peso promedio después de la dieta. 
 
-$$H_0: \mu_{antes} - \mu_{despues} = 0 \text{ (El peso promedio de los participantes no disminuyo)}$$
-$$H_1: \mu_{antes} - \mu_{despues} > 0 \text{ (El peso promedio de los participantes disminuyo)}$$
+Representando como $\mu_1$ y $\mu_2$ el peso promedio de los participante antes y después del programa respectivamente. Entonces las hipótesis a plantear son las siguientes:
+
+$$H_0: \mu_{1} - \mu_{2} = 0 \text{ (El peso promedio de los participantes no disminuyo)}$$
+$$H_1: \mu_{1} - \mu_{2} > 0 \text{ (El peso promedio de los participantes disminuyo)}$$
 
 * **Estadístico de prueba:**
 
 Para este tipo de prueba, como las varianzas poblacionales son desconocidas y ademas la muestra no es tan grande, el estadístico de prueba a utilizar es **t**. Solo que no conocemos si las varianzas poblaciones son iguales o distintas pero como las muestras pertenecen a los mismos participantes podemos asumir que las varianzas son iguales, por lo tanto nuestro estadístico de prueba sera:
 
 $$t_{n_1 + n_2 - 2} = \dfrac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{S_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$
+$$S_p = \sqrt{\frac{(n_1 - 1)s_1^2 + (n_2-1)s_2^2}{k}}$$
+$$k = n_1 + n_2 - 2$$
 
 * **Cálculo del p-valor con R:**
 
@@ -597,16 +607,17 @@ $$2P(Z > 2.77) = 2(1 - P(Z < 2.77))$$
 Lo cual da como resultado (redondeado a 4 decimales):
 
 ```{r}
-round(2 * (1 - pnorm(2.77)), 4)
+p_value <- 2 * (1 - pnorm(Z))
+round(p_value, 4)
 ```
 
 4. **Toma de decisión**
 
-Como se puede apreciar del resultado anterior el *p-valor = 0.0056* es muy pequeño. Lo podemos interpretar como la probabilidad de que $H_0$ se cumpla es aproximadamente 0.0056. Es decir, es muy improbable suponer cierta $H_0$.
+Como se puede apreciar del resultado anterior el *p-valor = 0.0057* es muy pequeño. Lo podemos interpretar como la probabilidad de que $H_0$ se cumpla es aproximadamente 0.0057. Es decir, es muy improbable suponer cierta $H_0$.
 
 Por lo tanto se concluye que $H_1$ se cumple, es decir que ha habido un cambio en la estatura promedio de mujeres en el grupo de primer año de cierta universidad.
 
-## Ejercicio 12. PENDIENTE POR RESOLVER
+## Ejercicio 12.
 
 ### Descripción.
 
@@ -618,21 +629,47 @@ Un estudio de la Universidad de Colorado revela que correr aumenta el porcentaje
 
 Representando con $\mu_1$ y $\mu_2$ la TMB en mujeres ancianas corredoras y la TMB en mujeres ancianas sedentarias respectivamente. Entonces, las hipótesis que se pueden plantear son:
 
-$H_0: \mu_1 - \mu_2 = 0.34$ (La TMB de ancianas corredoras es 34% más alta que la TMB  ancianas sedentarias)
+$$H_0: \mu_1 - \mu_2 = 0 \text{ (No existe un aumento significativo en la TMB de las corredoras respecto a las sedentarias)}$$
 
-$H_1: \mu_1 - \mu_2 < 0.34$ (La TMB de ancianas corredoras es menos del 34% de alta que la TMB ancianas sedentarias)
+$$H_1: \mu_1 - \mu_2 > 0 \text{ (Existe un aumento significativo en la TMB de las corredoras respecto a las sedentarias)}$$
 
 2. **Cálculo del estadístico de prueba:**
 
 Para esta prueba como las poblaciones se distribuyen de forma aproximadamente normal y con varianzas iguales, entonces el estadístico de prueba es:
 
 $$t_{n_1 + n_2 - 2} = \dfrac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{S_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$
+$$S_p = \sqrt{\frac{(n_1 - 1)s_1^2 + (n_2-1)s_2^2}{k}}$$
+$$k = n_1 + n_2 - 2$$
 
+Al sustituir los datos proporcionados en la formula del estadístico de prueba, tenemos que el valor de *t* es (redondeado a 2 decimales):
 
+```{r}
+n1 <- 30
+s1 <- 10.5
+n2 <- 30
+s2 <- 10.2
+
+k <- n1 + n2 - 2
+sp <- sqrt(( (n1-1)*s1**2 + (n2-1)*s2**2 ) / k)
+t <- ((34) - (0)) / (sp * sqrt(1/n1 + 1/n2))
+
+round(t, 2)
+```
 
 3. **Cálculo del p-valor**
 
+Como la prueba es unilateral tenemos que calcular la probabilidad de que $t_{58}$ supere el valor obtenido en el estadistico de prueba, es decir:
+
+$$P(t_{58} > 12.72) = 1 - P(t_{58} < 12.72)$$
+
+```{r}
+p_value <- 1 - pt(t, n1 + n2 - 2)
+p_value
+```
+
 4. **Toma de decisión**
+
+Como el $p-valor = 0$ es decir que es practicamente improbable se cumpla $H_0$, por lo tanto nos quedamos con $H_1$. Por lo que se puede concluir que si existe un aumento significativo en la TMB de las corredoras respecto a las sedentarias
 
 ## Ejercicio 13.
 
@@ -694,7 +731,7 @@ Dado que $t = 20.49 > t_{0.97, 48} = 1.93$, por lo tanto tenemos evidencia sufic
 
 Podemos comprobar la decisión calculando el $p-valor$, el cual es:
 
-$$P(t > 20.49) = 1 - P(t < 20.49)$$
+$$P(t_{48} > 20.49) = 1 - P(t_{48} < 20.49)$$
 
 ```{r}
 p_value <- 1 - pt(t, n1+n2-2)
@@ -776,37 +813,39 @@ $$H_1: \mu_1 - \mu_2 \ne 0 \text{ (Las medias de las dos poblaciones son diferen
 
 2. **Cálculo del estadístico de prueba:**
 
-Como las muestras no son grandes y se sabe que la segunda muestra tiene una población normal diferente a la primera, con lo cual se puede asumir que sus varianzas poblacionales son diferentes, entonces el estadístico de prueba es:
+Como se conocen las desviaciones estándar poblacional, entonces el estadístico de prueba es:
 
-$$t_{n_1 + n_2 - 2} = \frac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}}$$
+$$Z = \frac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}}$$
 
-Al sustituir los datos proporcionados en la formula anterior, tenemos que *t* es (redondeado a 2 decimales):
+Al sustituir los datos proporcionados en la formula anterior, tenemos que *Z* es (redondeado a 2 decimales):
 
 ```{r}
 n1 <- 25
-s1 <- 5.2
+sigma1 <- 5.2
 x1 <- 81
 n2 <- 36
-s2 <- 3.4
+sigma2 <- 3.4
 x2 <- 76
 
-t <- ((x1 - x2) - (0)) / sqrt(s1**2/n1 + s2**2/n2)
-round(t, 2)
+Z <- ((x1 - x2) - (0)) / sqrt(sigma1**2/n1 + sigma2**2/n2)
+
+round(Z, 2)
 ```
 
 3. **Cálculo del p-valor**
 
-Como la prueba es bilateral y el valor del estadístico de prueba de la muestra es positivo $t = 4.22$, entonces tenemos que calcular la siguiente probabilidad:
+Como la prueba es bilateral y el valor del estadístico de prueba de la muestra es positivo $Z = 4.22$, entonces tenemos que calcular la siguiente probabilidad:
 
-$$2P(t > 4.22) = 2(1 - P(t < 4.22))$$
+$$2P(Z > 4.22) = 2(1 - P(Z < 4.22))$$
 
 ```{r}
-2 * (1 - pt(t, n1+n2-2))
+p_value <- 2 * (1 - pnorm(Z))
+p_value
 ```
 
 4. **Toma de decisión**
 
-Dado que el *p-valor* obtenido es muy pequeño, lo podemos interpretar como la probabilidad de que $H_0$ se cumpla es igual a 8.493104e-05 es decir es practicamente improbable se cumpla $H_0$.
+Dado que el *p-valor* obtenido es muy pequeño, lo podemos interpretar como la probabilidad de que $H_0$ se cumpla es aproximada a 2.424822e-05 es decir es muy improbable que se cumpla $H_0$, por lo tanto decidimos quedarnos con $H_1$.
 
 Por lo tanto tenemos evidencia suficiente con la cual podemos concluir que hay diferencias entre las medias de las dos poblaciones.
 
@@ -820,10 +859,10 @@ Un fabricante afirma que la resistencia promedio a la tensión del hilo *A* exce
 
 1. **Planteamiento de las hipótesis:**
 
-Las hipótesis a plantear son:
+Representando como $\mu_1$ y $\mu_2$ el promedio a la tensión del hilo *A* y del hilo *B* respectivamente. Entonces las hipótesis a plantear son las siguientes:
 
-$$H_0: \mu_A - \mu_B = 12 \text{ (La resistencia del hilo A excede al menos 12 kg a la del B)}$$
-$$H_1: \mu_A - \mu_B < 12 \text{ (La resistencia del hilo A excede menos de 12 kg a la del B)}$$
+$$H_0: \mu_1 - \mu_2 = 12 \text{ (La resistencia del hilo A excede al menos 12 kg a la del B)}$$
+$$H_1: \mu_1 - \mu_2 < 12 \text{ (La resistencia del hilo A excede menos de 12 kg a la del B)}$$
 
 2. **Selección del nivel de significancia:**
 
@@ -865,4 +904,237 @@ Dado que el estadístico de prueba $Z = -2.6 < Z_{0.05} = -1.64$ tenemos evidenc
 
 Por lo tanto con un nivel de significancia $\alpha = 0.05$ se concluye que la afirmación del fabricante es incorrecta, es decir que la resistencia promedio a la tensión del hilo *A* excede menos de 12 kilogramos a la resistencia a la tensión promedio del hilo *B*.
 
+## Ejercicio 17.
+
+### Descripción.
+
+Se llevó a cabo un estudio para saber si el aumento en la concentración de sustrato tiene un efecto apreciable sobre la velocidad de una reacción química. Con una concentración de sustrato de 1.5 moles por litro, la reacción se realizó 15 veces, con una velocidad promedio de 7.5 micromoles por 30 minutos y una desviación estándar de 1.5. Con una concentración de sustrato de 2.0 moles por litro, se realizaron 12 reacciones que produjeron una velocidad promedio de 8.8 micromoles por 30 minutos y una desviación estándar muestral de 1.2. ¿Hay alguna razón para creer que este incremento en la concentración de sustrato ocasiona un aumento en la velocidad media de la reacción de más de 0.5 micromoles por 30 minutos? Utilice un nivel de significancia de 0.01 y suponga que las poblaciones se distribuyen de forma aproximadamente normal con varianzas iguales.
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+Si representamos como $\mu_{1}$ y $\mu_{2}$ las velocidades medias con el incremento y sin el incremento de sustrato respectivamente. Entonces las hipótesis que se pueden plantear son:
+
+$$H_0: \mu_{1} - \mu_{2} = 0.5 \text{ (El incremento de sustrato no tiene un efecto apreciable sobre la velocidad de reacción)}$$
+$$H_1: \mu_{1} - \mu_{2} > 0.5 \text{ (El incremento de sustrato tiene un efecto apreciable sobre la velocidad de reacción)}$$
+
+2. **Selección del nivel de significancia:**
+
+El nivel de significancia ya es dado con un valor de $\alpha = 0.01$
+
+3. **Cálculo del estadístico de prueba:**
+
+Como las muestras no son tan grandes y sabemos que que las poblaciones se distribuyen de forma aproximadamente normal con varianzas iguales, entonces el estadístico de prueba es:
+
+$$t_{n_1 + n_2 - 2} = \dfrac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{S_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$$
+$$S_p = \sqrt{\frac{(n_1 - 1)s_1^2 + (n_2-1)s_2^2}{k}}$$
+$$k = n_1 + n_2 - 2$$
+
+Al sustituir los datos proporcionados en la formula del estadístico de prueba, tenemos que el valor de *t* es (redondeado a 2 decimales):
+
+```{r}
+# Con el incremento
+n1 <- 12
+x1 <- 8.8
+s1 <- 1.2
+# Sin el incremento
+n2 <- 15
+x2 <- 7.5
+s2 <- 1.5
+
+k <- n1 + n2 - 2
+sp <- sqrt(( (n1-1)*s1**2 + (n2-1)*s2**2 ) / k)
+t <- ((x1 - x2) - (0.5)) / (sp * sqrt(1/n1 + 1/n2))
+
+round(t, 2)
+```
+
+4. **Formulación de la regla de decisión:**
+
+Dado que $\alpha = 0.01$ y que tenemos una prueba unilateral, tenemos que calcular el valor de $t_{1-\alpha, n_1 + n_2 - 2} = t_{0.99, 25}$ cuyo valor es (redondeado a 2 decimales):
+
+```{r}
+round( qt(0.99, n1+n2-2), 2)
+```
+
+Entonces, la regla de decisión es rechazar $H_0$ si $t > 2.49$
+
+5. **Toma de decisión:**
+
+Dado que el estadístico de prueba $t = 1.5 \ngtr t_{0.99, 25} = 2.49$, entonces no tenemos suficientes evidencias para rechazar $H_0$.
+
+Por lo tanto, tras el aumento en las concentaciones de sustrato de 1.5 a 2.0 moles por litro y con un nivel de significancia $\alpha = 0.01$ no se rechaza $H_0$ y se concluye que no hay evidencia suficiente para afirmar  que este incremento en la concentración de sustrato ocasiona un aumento en la velocidad media de la reacción de más de 0.5 micromoles por 30 minutos.
+
+## Ejercicio 18.
+
+### Descripción. 
+
+En un invierno con epidemia de influenza los investigadores de una conocida empresa farmacéutica encuestaron a los padres de 2000 bebés para determinar si el nuevo medicamento de la empresa era eficaz después de dos días. De 120 bebés que tenían influenza y que recibieron el medicamento, 29 se curaron en dos días o menos. De 280 bebés que tenían influenza pero no recibieron el fármaco, 56 se curaron en dos días o menos. ¿Hay alguna indicación significativa que apoye la afirmación de la empresa sobre la eficacia del medicamento?
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+Representando como $\mu_1$ al promedio de bebés que se curaron y que recibieron el medicamento y como $\mu_2$ el promedio de bebés que se curaron sin recibir el medicamento, donde en ambos casos los bebés se curaron en 2 días o menos. Entonces las hipótesis a plantear son las siguientes:
+
+$$H_0: \mu_1 - \mu_2 = 0 \text{ (El medicamento no es eficaz)}$$
+$$H_0: \mu_1 - \mu_2 > 0 \text{ (El medicamento es eficaz)}$$
+
+2. **Cálculo del estadístico de prueba:**
+
+Como desconocemos las varianzas poblaciones y las muestras son grandes, entonces el estadístico de prueba es:
+
+$$Z = \frac{ (\overline{X}_1 - \overline{X}_2) - (\mu_1 - \mu_2) }{\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}}$$
+
+Al sustituir los datos proporcionados en la formula anterior obtenemos que *Z* es igual a (redondeado a 2 decimales):
+
+```{r}
+n1 <- 120
+n2 <- 280
+x1 <- 29 / n1
+x2 <- 56 / n2
+with_med <- c( rep(1, 29), rep(0, n1-29) )
+without_med <- c( rep(1, 56), rep(0, n2-56) )
+s1 <- sd(with_med)
+s2 <- sd(without_med)
+
+Z <- ((x1 - x2) - (0)) / sqrt(((s1**2)/n1) + ((s2**2)/n2))
+round(Z, 2)
+```
+
+3. **Cálculo del p-valor**
+
+Como la prueba es unilateral tenemos que calcular la probabilidad de que *Z* supere el valor obtenido en el estadistico de prueba, es decir:
+
+$$P(Z > 0.91) = 1 - P(Z < 0.91)$$
+
+```{r}
+p_value <- 1 - pnorm(Z)
+round( p_value, 2 )
+```
+
+4. **Toma de decisión**
+
+Respecto al $p-valor \approx 0.18$, la conclusión estaria condicionada al nivel de significancia que se desee:
+
+- Rechazamos $H_0$, con un valor minimo de $\alpha=0.18$, es decir con un 82% máximo de confianza podemos rechazar $H_0$ y concluimos el medicamento es eficaz.
+- No rechazamos $H_0$, con un valor máximo de $\alpha = 0.17$, es decir, con un 83% mínimo de confianza no podemos rechazar $H_0$ y concluimos que el medicamento no es eficaz.
+
+## Ejercicio 19.
+
+### Descripción.
+
+Se asegura que el contenido de los envases de un lubricante específico se distribuye normalmente con una varianza de 0.03 litros. Se toma una muestra aleatoria de 10 envases y se obtiene:
+
+$$\text{10.2, 9.7, 10.1, 10.3, 10.1, 9.8, 9.9, 10.4, 10.3, 9.8}$$
+
+¿Se puede concluir valido lo que se asegura?. Usa el *p-valor* para tus conclusiones.
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+Como el parámetro de interes para este problema es la varianza, entonces las hipotesis que se pueden plantear son:
+
+$$H_0: \sigma^2 = 0.03 \text{ (Es valido lo que se asegura)}$$
+$$H_1: \sigma^2 \ne 0.03 \text{ (No es valido lo que se asegura)}$$
+
+2. **Cálculo del estadístico de prueba:**
+
+Tenemos una muestra de 20 envases que se distribuyen normalmente, por lo tanto el estadístico de prueba es:
+
+$$\chi_{n-1}^2 = \frac{ (n-1)S^2 }{\sigma^2}$$
+
+Al sustituir los datos proporcionados en la formula anterior, tenemos que el valor de $\chi^2$ es (redondeado a 2 decimales): 
+
+```{r}
+data <- c(10.2, 9.7, 10.1, 10.3, 10.1, 9.8, 9.9, 10.4, 10.3, 9.8) 
+n <- 10
+s_square <- var(data)
+sigma_square <- 0.03
+
+chisq <- ((n - 1) * s_square) / sigma_square
+round(chisq, 2)
+```
+
+3. **Cálculo del p-valor**
+
+Como la prueba es bilateral y el valor del estadístico de prueba de la muestra es positivo $\chi_{9}^2 = 18.13$, entonces tenemos que calcular la siguiente probabilidad:
+
+$$2P(\chi_{9}^2 > 18.13) = 2(1 - P(\chi_{9}^2 < 18.13))$$
+
+```{r}
+p_value <- 2 * (1 - pchisq(chisq, n-1))
+round(p_value, 2)
+```
+
+4. **Toma de decisión**
+
+Respecto al $p-valor = 0.07$, la conclusión estaria condicionada al nivel de significancia que se desee:
+
+- Rechazamos $H_0$, con un valor minimo de $\alpha=0.07$, es decir con un 93% máximo de confianza podemos rechazar $H_0$ y concluimos que no es valido lo que se asegura.
+- No rechazamos $H_0$, con un valor máximo de $\alpha = 0.06$, es decir, con un 94% mínimo de confianza no podemos rechazar $H_0$ y concluimos que es valido lo que se asegura.
+
+## Ejercicio 20
+
+### Descripción.
+
+Se dice que una máquina despachadora de bebida gaseosa está fuera de control si la varianza de los contenidos excede a 1.15 decilitros. Se toma una muestra aleatoria de 25 bebidas de esta máquina y se obtiene una varianza de 2.03 decilitros, ¿esto indica, a un nivel de significancia de 0.05, que la máquina esta fuera de control? Suponga que los contenidos se distribuyen de forma aproximadamente normal.
+
+### Solución.
+
+1. **Planteamiento de las hipótesis:**
+
+El parámetro de interes para este problema es la varianza por lo que las hipótesis que se pueden plantear son:
+
+$$H_0: \sigma^2 = 1.15 \text{ (La máquina trabaja con normalidad)}$$
+$$H_1: \sigma^2 > 1.15 \text{ (La máquina esta fuera de control)}$$
+
+2. **Selección del nivel de significancia:**
+
+El nivel de significancia ya es dado con un valor $\alpha = 0.05$
+
+3. **Cálculo del estadístico de prueba:**
+
+Como se tiene una muestra de 25 bebidas cuyo contenidos siguen una distribución normal, entonces el estadístico de prueba es:
+
+$$\chi_{n-1}^2 = \frac{ (n-1)S^2 }{\sigma^2}$$
+
+Al sustituir los datos proporcionados en la formula anterior, tenemos que el valor de $\chi^2$ es (redondeado a 2 decimales): 
+
+```{r}
+sigma_square <- 1.15
+n <- 25
+s_square <- 2.03
+
+chisq <- ((n - 1) * s_square) / sigma_square
+round(chisq, 2)
+```
+
+4. **Formulación de la regla de decisión:**
+
+Dado que $\alpha = 0.05$ y que tenemos una prueba unilateral, se tiene que calcular el valor de $\chi_{1 - \alpha, n-1} = \chi_{0.95, 24}$, dicho valor es (redondeado a 2 decimales):
+
+```{r}
+round( qchisq(0.95, n-1), 2 )
+```
+
+Entonces, la regla de decisión es rechazar $H_0$ si $\chi^2 > 36.42$
+
+5. **Toma de decisión:**
+
+Dado que el estadístico de prueba $\chi^2 = 42.37 > \chi_{0.95, 24} = 36.42$, se rechaza $H_0$ y nos quedamos con $H_1$.
+
+Podemos comprabar la decisión tomada calculando el *p-valor* el cual es:
+
+$$P(\chi^2 > 42.37) = 1 - P(\chi^2 < 42.37)$$
+
+```{r}
+p_value <- 1 - pchisq(chisq, n-1)
+round(p_value, 2)
+```
+Del resultado anterior podemos ver que el *p-valor = 0.01* es menor que el nivel de significancia $\alpha = 0.05$ con lo cual corroboramos que $H_0$ es rechazada. 
+
+Por lo tanto con un nivel de significancia $\alpha = 0.05$ tenemos evidencia suficiente para rechazar $H_0$ y se concluye que la máquina esta fuera de control.
 
