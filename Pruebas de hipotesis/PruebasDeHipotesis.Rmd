@@ -525,7 +525,7 @@ Una muestra aleatoria de 64 bolsas de palomitas con queso pesa, en promedio, 5.2
 Según la información proporcionada, el parámetro a analizar es $\mu$, es decir, el promedio de onzas que tienen las palomitas con queso. Por lo tanto, las hipótesis que se pueden plantear son:
 
 $$H_0: \mu = 5.5 \text{ (La afirmación del dueño es correcta)}$$
-$$H_1: \mu < 5.5 \text{ (La afirmación del dueño no es correcta)}$$
+$$H_1: \mu \ne 5.5 \text{ (La afirmación del dueño no es correcta)}$$
 
 2. **Selección del nivel de significancia:**
 
@@ -551,19 +551,27 @@ round(Z, 2)
 
 4. **Formulación de la regla de decisión:**
 
-Dado que $\alpha = 0.05$ y que tenemos una prueba unilateral, tenemos que calcular el valor de $Z_{\alpha} = Z_{0.05}$, lo cual redondeado a 2 decimales es:
+Dado que $\alpha = 0.05$ y que tenemos una prueba bilateral, tenemos que calcular el valor de:
+
+$Z_{\alpha} = Z_{0.05}$, lo cual redondeado a 2 decimales es:
 
 ```{r}
 round(qnorm(0.05), 2)
 ```
 
-Por lo tanto, la regla de decisión es rechazar $H_0$ si $Z < -1.64$.
+y $Z_{1 - \alpha} = Z_{0.95}$, lo cual redondeado a 2 decimales es:
+
+```{r}
+round(qnorm(0.95), 2)
+```
+
+Por lo tanto, la regla de decisión es rechazar $H_0$ si $Z < -1.64$ o $Z > 1.64$.
 
 5. **Toma de decisión:**
 
 Dado que el estadístico de prueba $Z = -9 < Z_{0.05} = -1.64$, debemos rechazar $H_0$ y quedarnos con $H_1$.
 
-Por lo que se concluye que con un valor $\alpha = 0.05$ la afirmación del dueño no es correcta, es decir el promedio del contenido de las palomitas con queso es menor a 5.5 onzas.
+Por lo que se concluye que con un valor $\alpha = 0.05$ la afirmación del dueño no es correcta, es decir el promedio del contenido de las palomitas con queso no es de 5.5 onzas.
 
 ## Ejercicio 11.
 
@@ -1060,21 +1068,18 @@ round(chisq, 2)
 
 3. **Cálculo del p-valor**
 
-Como la prueba es bilateral y el valor del estadístico de prueba de la muestra es positivo $\chi_{9}^2 = 18.13$, entonces tenemos que calcular la siguiente probabilidad:
+Como la prueba es bilateral la probabilidad que tenemos que calcular es:
 
-$$2P(\chi_{9}^2 > 18.13) = 2(1 - P(\chi_{9}^2 < 18.13))$$
+$$P(\chi_{9}^2 > 18.13 \text{ o } \chi_{9}^2 < -18.13) = [1 - P(\chi_{9}^2 < 18.13)] + P(\chi_{9}^2 < -18.13)$$
 
 ```{r}
-p_value <- 2 * (1 - pchisq(chisq, n-1))
+p_value <- (1 - pchisq(chisq, n-1)) + pchisq(-chisq, n-1)
 round(p_value, 2)
 ```
 
 4. **Toma de decisión**
 
-Respecto al $p-valor = 0.07$, la conclusión estaria condicionada al nivel de significancia que se desee:
-
-- Rechazamos $H_0$, con un valor minimo de $\alpha=0.07$, es decir con un 93% máximo de confianza podemos rechazar $H_0$ y concluimos que no es valido lo que se asegura.
-- No rechazamos $H_0$, con un valor máximo de $\alpha = 0.06$, es decir, con un 94% mínimo de confianza no podemos rechazar $H_0$ y concluimos que es valido lo que se asegura.
+Como el $p-valor = 0.03$, la probabilidad de que se cumpla $H_0$ es minima, por lo que se rechaza $H_0$ y nos quedamos con $H_1$, por lo tanto concluimos que no es valido lo que se asegura, es decir que la varianza del contenido de los envases de un lubricante específico no es de 0.03.
 
 ## Ejercicio 20
 
@@ -1088,7 +1093,7 @@ Se dice que una máquina despachadora de bebida gaseosa está fuera de control s
 
 El parámetro de interes para este problema es la varianza por lo que las hipótesis que se pueden plantear son:
 
-$$H_0: \sigma^2 = 1.15 \text{ (La máquina trabaja con normalidad)}$$
+$$H_0: \sigma^2 = 1.15 \text{ (La máquina esta bajo control)}$$
 $$H_1: \sigma^2 > 1.15 \text{ (La máquina esta fuera de control)}$$
 
 2. **Selección del nivel de significancia:**
