@@ -1,0 +1,324 @@
+---
+title: "Supuestos del modelo de regresión"
+output:
+  html_notebook: default
+---
+
+## Supuestos
+
+Es importante resaltar que si alguno de los siguientes supuesto no se cumple, cualquier resultado encontrado no tiene validez.
+
+### 1. **Normalidad**. Los residuales o errores siguen una distribución normal.
+
+$$\epsilon \text{~}  N(0, \sigma^2)$$
+
+#### Prueba gráfica.
+
+La grafica de *qqplot* comparará los cuantiles teóricos contra los cuantiles muestrales, de tal forma que si los residuos siguen una distribución normal, los cuantiles deberían quedar ajustados en una linea recta; de lo contrario el supuesto de normalidad es incorrecto.
+
+```{r}
+n <- 30
+x <- 1:30
+
+# Datos hipoteticos
+set.seed(1981) # Semilla.
+y1 <- round(rnorm(n, 10, 2), 0) # Datos normales con media 10 y varianza 4
+y2 <- round(rgamma(n, 1, 2), 0) # Datos no normales.
+
+# Modelo de regresión lineal en R
+m1 <- lm(y1~x)
+m2 <- lm(y2~x)
+
+# Residuales.
+e1 <- m1$residuals
+e2 <- m2$residuals
+
+# Grafico qqplot.
+par(mfrow = c(1, 2))
+
+qqnorm(e1, xlab = "Muestra con distribución normal", ylab = " ")
+qqline(e1, col = "blue")
+
+qqnorm(e2, xlab="Muestra con distribucion que no es normal", ylab = " ")
+qqline(e2, col = "blue")
+```
+
+
+
+
+#### Pruebas estadísticas.
+
+Veremos 2 métodos para contrastar las hipótesis:
+
+$$H_0 \text{ : Los datos son normales}$$
+$$H_1 \text{ : Los datos no son normales}$$
+
+- Prueba de *Shapiro-Wilks*
+
+```{r}
+shapiro.test(e1)
+
+shapiro.test(e2)
+```
+Para los datos 1, como $p-value = 0.3275$ no se rechaza $H_0$, por lo que se concluye que los errores siguen una distribución normal.
+
+Para los datos 2, como $p-value = 2.274e-06$ se rechaza $H_0$, por lo que se concluye que los errores NO siguen una distribución normal.
+
+- Prueba de *Anderson-Darling*
+
+```{r}
+library(nortest)
+
+ad.test(e1) # No se rechaza H_0
+
+ad.test(e2) # Se rechaza H_0
+```
+
+
+### 2. **Varianza constante**. La varianza de los errores debe ser constante.
+
+$$var(\epsilon_i) = \sigma^2$$
+
+**Importante**: Para revisar si este supuesto se cumple es necesario el supuesto de normalidad se haya cumplido.
+
+#### Prueba gráfica.
+
+De la gráfica de los valores ajustados contra los residuos ($\hat{y}_i$ vs $\epsilon_i$). Por lo general $\hat{y}_i$ va en el eje horizontal y los residuos en el eje vertical.
+
+- Si los puntos se ditribuyen de manera aleatoria en una banda horizontal (sin ningún patrón claro y contundente), entonces es señal de que se **cumple el supuestos de varianza constante** en los residuales.
+
+- Por el contrario, si se distribuyen con un patrón claro y contundente, en se señal de que **no se esta cumpliendo el supuesto de varianza constante**
+
+Ejemplo.
+
+```{r}
+n <- 30
+x <- 1:30
+
+# Datos hipoteticos
+set.seed(1981) # Semilla.
+
+y1 <- round(rnorm(n, 10, 2), 0) # Datos normales con varianza constante
+
+s <- c(rep(1, 10), rep(10, 10), rep(20, 10))
+y2 <- round(rnorm(n, sd = s), 0) # Datos normales con varianza no constante.
+
+# Modelo de regresión lineal en R.
+m1 <- lm(y1~x)
+m2 <- lm(y2~x)
+
+# Residuales.
+e1 <- m1$residuals
+e2 <- m2$residuals
+
+# Datos ajustados
+aj1 <- m1$fitted.values
+aj2 <- m2$fitted.values
+
+# Grafico de ajustados vs residuales
+par(mfrow = c(1, 2))
+
+plot(aj1, e1, xlab = "Se cumple el supuesto")
+abline(0, 0, col = "blue")
+abline(-4, 0, col = "red", lty = 2)
+abline(4, 0, col = "red", lty = 2)
+
+plot(aj2, e2, xlab = "No se cumple el supuesto")
+abline(0, 0, col = "blue")
+abline(-14, -5, col = "red", lty = 2)
+abline(14, 5, col = "red", lty = 2)
+```
+
+
+#### Prueba estadística.
+
+Las hipótesis son:
+
+$$H_0: \text{ La varianza es constante}$$
+$$H_1: \text{ La varianza no es constante}$$
+
+- Prueba de *Breush-Pagan*
+
+```{r}
+library(lmtest)
+
+bptest(y1~x)
+
+bptest(y2~x)
+```
+Para los datos 1, como $p-value = 0.61$ no se rechaza $H_0$, por lo que se concluye que la varianza es constante.
+
+Para los datos 2, como $p-value = 0.001013$ se rechaza $H_0$, por lo que se concluye que la varianza NO es constante.
+
+
+### 3. **Independencia**. Las observaciones son independientes, esto se verifica si:
+
+$$E(\epsilon_i, \epsilon_j) = 0$$
+
+#### Prueba gráfica.
+
+Si se grafica el orden en que se colectó un dato contra el residuo correspondiente; donde en el eje horizontal esta el tiempo y el eje vertical los residuos.
+
+- Si se detecta una tendencia o patrón no aleatorio claramente definido, es evidencia de que **no se cumple el supuesto de independecia**.
+
+- Si el comportamiento d elos puntos es aletorio dentro de una banda horizontal, el **supuesto de independia se cumple**
+
+Ejemplo
+```{r}
+n <- 30
+x <- 1:30
+
+#Datos hipoteticos
+set.seed(1981)
+
+y1 <- round(rnorm(n, 10, 2), 0) # Datos normales independientes.
+
+library(mvtnorm)
+m <- c(0, 5)
+s <- matrix(c(1, 0.99, 0.99, 1), ncol = 2)
+y2 <- round( c(rmvnorm(n/2, m, s)), 0 )
+
+# Modelo de regresión lineal en R.
+m1 <- lm(y1~x)
+m2 <- lm(y2~x)
+
+# Residuales.
+e1 <- m1$residuals
+e2 <- m2$residuals
+
+# Grafico de residuales
+par(mfrow = c(1, 2))
+
+plot(x, e1, xlab = "Observaciones independientes")
+abline(0, 0, col="blue")
+abline(h = -4, col = "red", lty = 2)
+abline(h = 4, col = "red", lty = 2)
+
+plot(x, e2, xlab = "Observaciones no independientes")
+abline(0, 0, col="blue")
+```
+
+#### Prueba estadística.
+
+Las hipótesis son:
+
+$$H_0: \text{ Existe independencia}$$
+$$H_1: \text{ No existe independencia}$$
+
+```{r}
+library(lmtest)
+
+dwtest(y1~x)
+
+dwtest(y2~x)
+```
+Como $p-value = 0.6589$ no se rechaza $H_0$, por lo que se concluye que existe independencia.
+
+Como $p-value = 0.0002553$ se rechaza $H_0$, por lo que se concluye que NO existe independencia.
+
+## Ejercicios de práctica.
+
+### 1. Supuesto de normalidad usando la prueba de Shapiro-Wilks.
+
+Se tienen los siguientes datos de la velocidad **y** (en m/min) contra tiempo **x** (en min), alcanzada por un vehículo. **tiempo**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45. **velocidad**: 22.463, 27.652, 33.787, 38.9, 43.826, 48.278, 53.537, 59.144, 63.714, 68.999, 74.035, 79.636, 84.37, 89.621, 95.125, 99.968, 104.865, 110.796, 115.671, 120.339, 125.467, 130.992, 135.92, 141.355, 146.668, 152.222, 156.475, 162.41, 167.319, 172.692, 177.429, 182.364, 187.518, 193.23, 198.452, 203.032, 208.663, 213.883, 219.154, 224.683, 229.548, 233.734, 238.899, 244.871, 249.192. Determina si se cumple el supuesto de normalidad utilizando la prueba de Shapiro-Wilks.
+
+Nota: si se cumple el supuesto, digita 1; en caso contrario digita 0.
+
+#### Solución.
+
+Hipotesis.
+$$H_0 \text{ : Los datos son normales}$$
+$$H_1 \text{ : Los datos no son normales}$$
+
+```{r}
+x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52)
+y <- c(15.099, 20.087, 24.238, 29.478, 34.588, 40.152, 43.68, 48.848, 54.473, 58.256, 64.384, 70.02, 73.02, 82.775, 96.196, 93.437, 90.761, 97.979, 97.961, 106.961, 112.43, 113.836, 128.571, 129.907, 132.73, 138.06, 139.854, 152.338, 152.662, 164.624, 158.42, 174.89, 169.666, 175.481, 207.72, 182.603, 185.787, 198.009, 189.944, 195.893, 199.998, 211.445, 206.9, 238.695, 268.895, 244.877, 247.64, 253.745, 244.798, 273.176, 287.834, 285.69)
+
+# Modelo de regresión lineal en R.
+m <- lm(y~x)
+# Residual.
+e <- m$residuals
+# Prueba de Shapiro-Wilks
+shapiro.test(e)
+```
+
+Como $p-value = 0.002336$ es muy pequeña la probabilidad de que se cumpla $H_0$ por lo que nos quedamos con $H_1$, con lo que se concluye que no se cumple el supuesto de normalidad (0).
+
+### 2. Supuesto de independencia.
+
+Se tienen los siguientes datos de la velocidad **y** (en m/min) contra tiempo **x** (en min), alcanzada por un vehículo. **tiempo**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70. **velocidad**: 1.129, 0.766, 0.547, -0.439, -0.098, 0.594, 1.152, 0.621, 1.933, -1.009, 0.692, -0.333, 0.044, 0.612, -0.991, -0.087, -0.799, 1.199, -0.896, 2.562, 1.629, 0.763, -1.687, -2.102, -1.885, -0.832, 0.21, 1.073, 1.498, -1.671, -0.664, 0.254, -0.764, 0.822, -0.346, 6.877, 6.294, 5.59, 4.83, 4.935, 5.267, 5.207, 4.774, 6.596, 3.339, 5.601, 4.582, 5.341, 5.697, 4.741, 4.878, 4.297, 5.504, 4.305, 7.538, 5.92, 5.606, 3.788, 3.35, 3.264, 4.395, 4.911, 6.165, 6.19, 3.599, 4.08, 4.756, 3.947, 5.562, 5.015. Determina si se cumple el supuesto de independencia utilizando la prueba de Durbin-Watson.
+
+Nota: si se cumple el supuesto, digita 1; en caso contrario digita 0.
+
+#### Solución.
+
+Hipotesis.
+$$H_0: \text{ Existe independencia}$$
+$$H_1: \text{ No existe independencia}$$
+
+```{r}
+x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70)
+y <- c(1.129, 0.766, 0.547, -0.439, -0.098, 0.594, 1.152, 0.621, 1.933, -1.009, 0.692, -0.333, 0.044, 0.612, -0.991, -0.087, -0.799, 1.199, -0.896, 2.562, 1.629, 0.763, -1.687, -2.102, -1.885, -0.832, 0.21, 1.073, 1.498, -1.671, -0.664, 0.254, -0.764, 0.822, -0.346, 6.877, 6.294, 5.59, 4.83, 4.935, 5.267, 5.207, 4.774, 6.596, 3.339, 5.601, 4.582, 5.341, 5.697, 4.741, 4.878, 4.297, 5.504, 4.305, 7.538, 5.92, 5.606, 3.788, 3.35, 3.264, 4.395, 4.911, 6.165, 6.19, 3.599, 4.08, 4.756, 3.947, 5.562, 5.015)
+
+
+# Modelo de regresión lineal en R.
+m <- lm(y~x)
+# Residual.
+e <- m$residuals
+# Prueba de Durbin-Watson.
+dwtest(y~x)
+```
+
+Como $p-value = 2.642e-09$ es muy pequeña la probabilidad de que se cumpla $H_0$ por lo que nos quedamos con $H_1$, con lo que se concluye que no se cumple el supuesto de independencia (0).
+
+## Ejercicios de evaluación (distintos a los de práctica)
+
+### 2. Supuesto de normalidad usando la prueba de Anderson-Darling.
+
+Se tienen los siguientes datos de la velocidad **y** (en m/min) contra tiempo **x** (en min), alcanzada por un vehículo. **tiempo**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66. **velocidad**: -0.642, 1.094, -1.471, -0.4, -0.851, 0.352, 0.518, -2.434, -0.756, -0.032, 0.661, -0.661, -0.398, 1.009, 0.641, 0.838, 0.255, -2.096, -0.569, -0.354, 0.335, -1.299, -1.121, 0.908, 1.025, 1.39, -0.458, -0.005, 1.192, 0.067, 0.178, -0.684, 0.448, 3.985, 5.067, 3.043, 4.723, 5.109, 6.02, 5.214, 2.472, 3.766, 5.678, 5.195, 4.401, 4.553, 6.082, 5.549, 5.113, 5.492, 3.676, 5.131, 4.087, 4.835, 3.454, 3.299, 5.768, 5.971, 5.703, 4.589, 5.745, 5.477, 4.828, 5.26, 4.045, 5.733. Determina si se cumple el supuesto de normalidad utilizando la prueba de Anderson-Darling.Nota: si se cumple el supuesto, digita 1; en caso contrario digita 0.
+
+#### Solución.
+
+Hipotesis.
+$$H_0 \text{ : Los datos son normales}$$
+$$H_1 \text{ : Los datos no son normales}$$
+
+```{r}
+x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66)
+y <- c(-0.642, 1.094, -1.471, -0.4, -0.851, 0.352, 0.518, -2.434, -0.756, -0.032, 0.661, -0.661, -0.398, 1.009, 0.641, 0.838, 0.255, -2.096, -0.569, -0.354, 0.335, -1.299, -1.121, 0.908, 1.025, 1.39, -0.458, -0.005, 1.192, 0.067, 0.178, -0.684, 0.448, 3.985, 5.067, 3.043, 4.723, 5.109, 6.02, 5.214, 2.472, 3.766, 5.678, 5.195, 4.401, 4.553, 6.082, 5.549, 5.113, 5.492, 3.676, 5.131, 4.087, 4.835, 3.454, 3.299, 5.768, 5.971, 5.703, 4.589, 5.745, 5.477, 4.828, 5.26, 4.045, 5.733)
+
+# Modelo de regresión lineal en R.
+m <- lm(y~x)
+# Residual.
+e <- m$residuals
+# Prueba de Anderson-Darling.
+library(nortest)
+ad.test(e)
+```
+
+Como $p-value = 0.7263$ la probabilidad de que se cumpla $H_0$ es grande, por lo que se concluye que se cumple el supuesto de normalidad (1).
+
+### 3. Supuesto de varianza constante.
+
+Se tienen los siguientes datos de la velocidad **y** (en m/min) contra tiempo **x** (en min), alcanzada por un vehículo. **tiempo**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42. **velocidad**: 0.206, -1.219, -0.349, -0.844, -1.378, -0.645, 0.427, -0.555, 0.278, 1.283, 0.133, 1.792, -1.405, -1.334, 0.874, -0.692, 0.339, -0.658, 1.265, 0.054, -0.859, 4.958, 4.08, 4.83, 4.097, 4.977, 4.979, 5.645, 4.815, 5.003, 6.019, 5.243, 6.93, 3.827, 2.979, 5.938, 4.143, 5.028, 3.834, 6.532, 5.617, 3.694. Determina si se cumple el supuesto de varianza constante utilizando la prueba de Breusch-Pagan.
+
+Nota: si se cumple el supuesto, digita 1; en caso contrario digita 0.
+
+Hipótesis:
+
+$$H_0: \text{ La varianza es constante}$$
+$$H_1: \text{ La varianza no es constante}$$
+
+```{r}
+x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42)
+y <- c(0.206, -1.219, -0.349, -0.844, -1.378, -0.645, 0.427, -0.555, 0.278, 1.283, 0.133, 1.792, -1.405, -1.334, 0.874, -0.692, 0.339, -0.658, 1.265, 0.054, -0.859, 4.958, 4.08, 4.83, 4.097, 4.977, 4.979, 5.645, 4.815, 5.003, 6.019, 5.243, 6.93, 3.827, 2.979, 5.938, 4.143, 5.028, 3.834, 6.532, 5.617, 3.694)
+
+# Modelo de regresión lineal en R.
+m <- lm(y~x)
+# Residuales.
+e <- m$residuals
+# Prueba de Breusch-Pagan
+bptest(y~x)
+```
+
+Como $p-value = 0.1938$ es relativamente grande, no se rechaza $H_0$, por lo que se concluye que el supuesto de varianza se cumple.
