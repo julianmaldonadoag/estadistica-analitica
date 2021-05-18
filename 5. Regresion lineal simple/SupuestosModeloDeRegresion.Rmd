@@ -263,10 +263,8 @@ y <- c(1.129, 0.766, 0.547, -0.439, -0.098, 0.594, 1.152, 0.621, 1.933, -1.009, 
 
 # Modelo de regresión lineal en R.
 m <- lm(y~x)
-# Residual.
-e <- m$residuals
 # Prueba de Durbin-Watson.
-dwtest(y~x)
+dwtest(m) # o dwtest(y~x)
 ```
 
 Como $p-value = 2.642e-09$ es muy pequeña la probabilidad de que se cumpla $H_0$ por lo que nos quedamos con $H_1$, con lo que se concluye que no se cumple el supuesto de independencia (0).
@@ -315,10 +313,8 @@ y <- c(0.206, -1.219, -0.349, -0.844, -1.378, -0.645, 0.427, -0.555, 0.278, 1.28
 
 # Modelo de regresión lineal en R.
 m <- lm(y~x)
-# Residuales.
-e <- m$residuals
 # Prueba de Breusch-Pagan
-bptest(y~x)
+bptest(m) # o bptest(y~x)
 ```
 
 Como $p-value = 0.1938$ es relativamente grande, no se rechaza $H_0$, por lo que se concluye que el supuesto de varianza se cumple.
